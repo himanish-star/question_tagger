@@ -10,7 +10,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use('/', express.static(__dirname + '/static'));
 
 app.get('/', (req, res) => {
-  console.log(req.get('host'));
   res.redirect('/templates/home_page.html');
 });
 
@@ -50,6 +49,6 @@ app.get('/redirect', (req, res) => {
   request.end();
 });
 
-app.listen(3000, () => {
+app.listen(3000, '127.0.0.1', () => {
   console.log("started at http://localhost:3000");
 });
