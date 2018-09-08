@@ -3,5 +3,11 @@
     "start": "node server.js"
   },
   "name": "",
-  "version": ""
+  "version": "",
+  "dependencies": {
+    "express": "^4.16.3",
+    "mongodb": "^3.1.4",
+    "node-uuid": "^1.4.8",
+    "sprintf-js": "^1.1.1"
+  }
 }

@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const credentials = require(__dirname + '/config/credentials.json');
 const https = require('https');
+require('./mongoServer.js');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -11,10 +12,6 @@ app.use('/', express.static(__dirname + '/static'));
 app.get('/', (req, res) => {
   res.redirect('/templates/home_page.html');
 });
-
-app.get('/getCredentials', (req, res) => {
-  res.send(credentials);
-})
 
 app.get('/login', (req,res) => {
   res.redirect(`https://api.codechef.com/oauth/authorize?response_type=code&client_id=${credentials['Client ID']}&state=xyz&redirect_uri=${credentials.redirectURL}`);
@@ -42,8 +39,9 @@ app.get('/redirect', (req, res) => {
       data += chunk;
     });
     response.on('end', () => {
+      data = JSON.parse(data);
       console.log(data);
-      res.send('response');
+      res.redirect(`/templates/home_page.html?access_token=${data.result.data.access_token}`);
     });
   });
   request.write(JSON.stringify(post_body));
