@@ -10,6 +10,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use('/', express.static(__dirname + '/static'));
 
 app.get('/', (req, res) => {
+  console.log(req.get('host'));
   res.redirect('/templates/home_page.html');
 });
 
