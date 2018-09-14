@@ -50,8 +50,8 @@ app.get('/redirect', (req, res) => {
       data = JSON.parse(data);
       console.log(data);
       mongoUtilities.Users.storeUser({
-        sessionID: req.sessionID,
-        access_token: data.result.data.access_token
+        'sessionID': req.sessionID,
+        'access_token': data.result.data.access_token
       })
         .then((msg) => {
           console.log(msg);
