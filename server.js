@@ -50,5 +50,5 @@ app.get('/redirect', (req, res) => {
 });
 
 app.listen(5000,'172.31.21.111', () => {
-  console.log("started at http://localhost:3000");
+  console.log("started at http://shmdeveloper.com");
 });
