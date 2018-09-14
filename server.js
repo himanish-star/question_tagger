@@ -3,8 +3,16 @@ const app = express();
 const bodyParser = require('body-parser');
 const credentials = require(__dirname + '/config/credentials.json');
 const https = require('https');
-require('./mongoServer.js');
+const session = require('express-session');
+const mongoUtilities = require('./mongo/mongoServer.js');
 
+app.set('trust proxy', 1) // trust first proxy
+app.use(session({
+  secret: credentials.secret,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: true }
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use('/', express.static(__dirname + '/static'));
@@ -41,14 +49,21 @@ app.get('/redirect', (req, res) => {
     response.on('end', () => {
       data = JSON.parse(data);
       console.log(data);
+      mongoUtilities.Users.storeUser({
+        sessionID: req.sessionID,
+        access_token: data.result.data.access_token
+      })
+        .then((msg) => {
+          console.log(msg);
+        });
       res.redirect(`/templates/home_page.html?access_token=${data.result.data.access_token}`);
     });
   });
   request.write(JSON.stringify(post_body));
-  console.log(post_body);
+  console.log(post_body, req.sessionID);
   request.end();
 });
 
 app.listen(5000,'172.31.21.111', () => {
-  console.log("started at http://shmdeveloper.com");
+  console.log("your server has started and the website can be viewed at http://shmdeveloper.com");
 });
