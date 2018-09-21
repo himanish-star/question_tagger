@@ -6,19 +6,44 @@ const https = require('https');
 const session = require('express-session');
 const mongoUtilities = require('./mongo/mongoServer.js');
 
-app.set('trust proxy', 1) // trust first proxy
 app.use(session({
-  secret: credentials.secret,
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: true }
-}));
+  secret: 'keyboard cat',
+  cookie: { maxAge:  365 * 24 * 60 * 60 * 1000 },
+  resave: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use('/', express.static(__dirname + '/static'));
 
 app.get('/', (req, res) => {
-  res.redirect('/templates/home_page.html');
+  if(req.session.username) {
+    console.log('existing user redirect');
+    res.redirect('/dashboard');
+  } else {
+    console.log('new user redirect');
+    res.redirect('/loginUser');
+  }
+});
+
+app.get('/dashboard', (req, res) => {
+  res.sendFile(__dirname + '/static/templates/d_dashboard.html');
+});
+
+app.get('/loginUser', (req, res) => {
+  res.sendFile(__dirname + '/static/templates/login_index.html');
+});
+
+app.get('/logout', (req, res) => {
+  //implement this part
+});
+
+app.get('/userDetails', (req, res) => {
+  mongoUtilities.Users.findUser({ username: req.session.username })
+    .then((data) => {
+      res.send(data.fullname);
+    })
+    .catch((err) => {
+      res.send(err);
+    });
 });
 
 app.get('/login', (req,res) => {
@@ -46,24 +71,79 @@ app.get('/redirect', (req, res) => {
     response.on('data', (chunk) => {
       data += chunk;
     });
-    response.on('end', () => {
+    response.on('end', async () => {
       data = JSON.parse(data);
-      console.log(data);
-      mongoUtilities.Users.storeUser({
-        'sessionID': req.sessionID,
-        'access_token': data.result.data.access_token
-      })
-        .then((msg) => {
-          console.log(msg);
+      const userDetails = await getUserName(data.result.data.access_token);
+
+      mongoUtilities.Users.findUser({ username: userDetails.username })
+        .then((result) => {
+          if(result) {
+            mongoUtilities.Users.updateUser({
+              'username': userDetails.username,
+            }, {
+              $set: { 'access_token': data.result.data.access_token }
+            })
+              .then((msg) => {
+                console.log(msg);
+              })
+              .catch((err) => {
+                console.error('update user error', err);
+              });
+          } else {
+            mongoUtilities.Users.storeUser({
+              'access_token': data.result.data.access_token,
+              'username': userDetails.username,
+              'fullname': userDetails.fullname
+            })
+              .then((msg) => {
+                console.log(msg);
+              })
+              .catch((err) => {
+                console.error('store user error');
+              });
+          }
+        })
+        .catch(err => {
+          console.error('find user error');
         });
-      res.redirect(`/templates/home_page.html?access_token=${data.result.data.access_token}`);
-    });
+      req.session.username = userDetails.username;
+      res.redirect('/dashboard');
+    })
   });
   request.write(JSON.stringify(post_body));
-  console.log(post_body, req.sessionID);
   request.end();
 });
 
-app.listen(5000,'172.31.21.111', () => {
+app.listen(5000, () => {
   console.log("your server has started and the website can be viewed at http://shmdeveloper.com");
 });
+
+//functions :)
+
+const getUserName = (access_token) => {
+  return new Promise((resolve, reject) => {
+    const options = {
+      'method': 'GET',
+      'host': 'api.codechef.com',
+      'path': '/users/me',
+      'headers': {
+        'content-Type': 'application/json',
+        'Authorization': `Bearer ${access_token}`
+      }
+    };
+    const request = https.request(options, (response) => {
+      let data = '';
+      response.on('data', (chunk) => {
+        data += chunk;
+      });
+      response.on('end', () => {
+        data = JSON.parse(data);
+        resolve({
+          username: data.result.data.content.username,
+          fullname: data.result.data.content.fullname
+        });
+      });
+    });
+    request.end();
+  });
+};
