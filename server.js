@@ -5,6 +5,7 @@ const credentials = require(__dirname + '/config/credentials.json');
 const https = require('https');
 const session = require('express-session');
 const mongoUtilities = require('./mongo/mongoServer.js');
+const fs = require('fs');
 
 app.use(session({
   secret: 'keyboard cat',
@@ -24,6 +25,40 @@ app.get('/', (req, res) => {
   }
 });
 
+app.get('/tag', (req, res) => {
+  res.sendFile(__dirname + '/static/templates/d_tag.html');
+});
+
+app.get('/fetchMasterTable', (req, res) => {
+
+});
+
+app.get('/fetchUserQuestionsTable', async (req, res) => {
+  const username = req.session.username;
+  const tempResults = await mongoUtilities.Users.findUser({ "username": username});
+  const options = {
+    "host": "api.codechef.com",
+    "path": `/users/${username}`,
+    "method": "GET",
+    "headers": {
+      "content-Type": "application/json",
+      "Authorization": `Bearer ${tempResults.access_token}`
+    }
+  }
+  const request = https.request(options, response => {
+    let data = '';
+    response.on('data', chunk => {
+      data += chunk;
+    });
+    response.on('end', async () => {
+      data = JSON.parse(data);
+      const list = await extractListOfQuestions(data.result.data.content.problemStats);
+      res.send(list.toString());
+    });
+  })
+  request.end();
+});
+
 app.get('/dashboard', (req, res) => {
   res.sendFile(__dirname + '/static/templates/d_dashboard.html');
 });
@@ -33,13 +68,13 @@ app.get('/loginUser', (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-  //implement this part
+  //todo: implement this part
 });
 
 app.get('/userDetails', (req, res) => {
   mongoUtilities.Users.findUser({ username: req.session.username })
     .then((data) => {
-      res.send(data.fullname);
+      res.send(data);
     })
     .catch((err) => {
       res.send(err);
@@ -81,7 +116,9 @@ app.get('/redirect', (req, res) => {
             mongoUtilities.Users.updateUser({
               'username': userDetails.username,
             }, {
-              $set: { 'access_token': data.result.data.access_token }
+              $set: {
+                'access_token': data.result.data.access_token,
+                'refresh_token': data.result.data.refresh_token }
             })
               .then((msg) => {
                 console.log(msg);
@@ -93,7 +130,8 @@ app.get('/redirect', (req, res) => {
             mongoUtilities.Users.storeUser({
               'access_token': data.result.data.access_token,
               'username': userDetails.username,
-              'fullname': userDetails.fullname
+              'fullname': userDetails.fullname,
+              'refresh_token': data.result.data.refresh_token
             })
               .then((msg) => {
                 console.log(msg);
@@ -145,5 +183,23 @@ const getUserName = (access_token) => {
       });
     });
     request.end();
+  });
+};
+
+const extractListOfQuestions = (problemStats) => {
+  return new Promise((res, rej) => {
+    let list = [];
+    Object.keys(problemStats).forEach(stat => {
+      Object.keys(problemStats[`${stat}`]).forEach(substat => {
+        problemStats[`${stat}`][`${substat}`].forEach(problemcode => {
+          list.push(problemcode);
+        })
+      });
+    });
+    console.log('user request for list fetch');
+    const uniqueList = new Set(list);
+    list = Array.from(uniqueList.values());
+    list.sort();
+    res(list);
   });
 };
