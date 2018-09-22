@@ -1,7 +1,20 @@
-.listOfquestions tbody td {
+.dark-edition .table>tbody>tr>td {
   color: white;
+  font-weight: bold;
 }
 
-.dropdownLabels {
-  width: calc(100% - 100px)
+ul.multiselect-container {
+  color: #fafafa;
+  background-color: #202840;
+  border: white solid;
+}
+
+.dark-edition .table>thead>tr>th, .dark-edition .table>tbody>tr>th, .dark-edition .table>tfoot>tr>th, .dark-edition .table>thead>tr>td, .dark-edition .table>tbody>tr>td, .dark-edition .table>tfoot>tr>td {
+  color: white;
+  font-weight: bold;
+}
+
+#waitMessage {
+  color: white;
+  font-weight: bold;
 }

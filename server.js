@@ -15,6 +15,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use('/', express.static(__dirname + '/static'));
 
+app.use('/', (req, res, next) => {
+  if(!req.session.username && req.path !== '/loginUser' && req.path !== '/login' && req.path !== '/redirect') {
+    console.log('new user redirect');
+    res.redirect('/loginUser');
+  } else {
+    next();
+  }
+});
+
 app.get('/', (req, res) => {
   if(req.session.username) {
     console.log('existing user redirect');
@@ -52,13 +61,12 @@ app.get('/fetchUserQuestionsTable', async (req, res) => {
     });
     response.on('end', async () => {
       data = JSON.parse(data);
-      const list = await extractListOfQuestions(data.result.data.content.problemStats);
+      const list = await extractListOfQuestions(data.result.data.content.problemStats)
+        .catch((err) => {
+          console.log(data);
+        });
       res.send(JSON.stringify(list));
     });
-    response.on('error', (err) => {
-      console.log(data);
-      res.send(JSON.stringify({}));
-    })
   })
   request.end();
 });

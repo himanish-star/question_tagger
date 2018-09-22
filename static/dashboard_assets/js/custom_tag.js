@@ -31,6 +31,8 @@ window.onload = () => {
 
   const displayList = (data) => {
     data = JSON.parse(data);
+    listOfUnmarkedQuestions.text('');
+    $('#waitMessage').hide();
     data.forEach((problem, i) => {
       listOfUnmarkedQuestions.append(`
         <tr>
@@ -79,7 +81,7 @@ window.onload = () => {
               <option value="MO’s Algorithm">MO’s Algorithm</option>
             </select>
           </td>
-          <td><button class="btn btn-warn">mark</button></td>
+          <td><button class="btn btn-success">mark</button></td>
         </tr>
       `);
       $(`#multipleTag${i}`).multiselect();
