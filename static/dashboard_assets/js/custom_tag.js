@@ -1,5 +1,4 @@
 window.onload = () => {
-  const fetchAllBtn = $('#fetchAllBtn');
   const fetchSomeBtn = $('#fetchSomeBtn');
   const mainPanel = $('#mainPanel');
   const sidebarCollapsible = $('#sidebarCollapsible');
@@ -23,6 +22,7 @@ window.onload = () => {
   };
 
   const fetchList = () => {
+    $('#waitMessage').show();
     $.get('/fetchUserQuestionsTable', (data) => {
       localStorage.setItem('userQuestionsList', data);
       displayList(data);
@@ -30,14 +30,16 @@ window.onload = () => {
   }
 
   const displayList = (data) => {
+    const host = "https://www.codechef.com";
     data = JSON.parse(data);
     listOfUnmarkedQuestions.text('');
     $('#waitMessage').hide();
     data.forEach((problem, i) => {
+      const sectionPath = problem.category === 'Practice Problems' ? 'problems' : problem.category + '/problems';
       listOfUnmarkedQuestions.append(`
         <tr>
           <td>${parseInt(i)+1}</td>
-          <td>${problem.problemcode}</td>
+          <td><a href="${host}/${sectionPath}/${problem.problemcode}">${problem.problemcode}</a></td>
           <td>${problem.status}</td>
           <td>${problem.category}</td>
           <td>
