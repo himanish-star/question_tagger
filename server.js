@@ -53,8 +53,12 @@ app.get('/fetchUserQuestionsTable', async (req, res) => {
     response.on('end', async () => {
       data = JSON.parse(data);
       const list = await extractListOfQuestions(data.result.data.content.problemStats);
-      res.send(list.toString());
+      res.send(JSON.stringify(list));
     });
+    response.on('error', (err) => {
+      console.log(data);
+      res.send(JSON.stringify({}));
+    })
   })
   request.end();
 });
@@ -192,14 +196,32 @@ const extractListOfQuestions = (problemStats) => {
     Object.keys(problemStats).forEach(stat => {
       Object.keys(problemStats[`${stat}`]).forEach(substat => {
         problemStats[`${stat}`][`${substat}`].forEach(problemcode => {
-          list.push(problemcode);
+          list.push({
+            "problemcode": problemcode,
+            "status": stat,
+            "category": substat
+          });
         })
       });
     });
     console.log('user request for list fetch');
     const uniqueList = new Set(list);
     list = Array.from(uniqueList.values());
-    list.sort();
-    res(list);
+    list.sort((a, b) => {
+      return a.problemcode.localeCompare(b.problemcode);
+    });
+
+    let reduceList = [];
+    let lastElem = list[0];
+    for(let i=1; i<list.length; i++) {
+      if(lastElem.problemcode === list[i].problemcode) {
+        if(list[i].status === 'solved')
+          lastElem = list[i];
+      } else {
+        reduceList.push(lastElem);
+        lastElem = list[i];
+      }
+    }
+    res(reduceList);
   });
 };

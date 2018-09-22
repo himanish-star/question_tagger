@@ -1,0 +1,7 @@
+.listOfquestions tbody td {
+  color: white;
+}
+
+.dropdownLabels {
+  width: calc(100% - 100px)
+}

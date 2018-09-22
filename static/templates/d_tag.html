@@ -17,11 +17,13 @@
   <link href="../dashboard_assets/css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="../dashboard_assets/demo/demo.css" rel="stylesheet" />
+  <link href="../dashboard_assets/css/custom_tag.css" rel="stylesheet" />
+  <link href="../dashboard_assets/css/bootstrap-multiselect.css" rel="stylesheet" />
 </head>
 
 <body class="dark-edition">
   <div class="wrapper ">
-    <div class="sidebar" data-color="purple" data-background-color="black" data-image="../dashboard_assets/img/sidebar-2.jpg">
+    <div id="sidebarCollapsible" class="sidebar" data-color="purple" data-background-color="black" data-image="../dashboard_assets/img/sidebar-2.jpg">
       <!--
         Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
 
@@ -35,7 +37,7 @@
       <div class="sidebar-wrapper">
         <ul class="nav">
           <li class="nav-item  ">
-            <a class="nav-link" href="./dashboard.html">
+            <a class="nav-link" href="/dashboard">
               <i class="material-icons">dashboard</i>
               <p>Dashboard</p>
             </a>
@@ -85,7 +87,7 @@
         </ul>
       </div>
     </div>
-    <div class="main-panel">
+    <div id="mainPanel" class="main-panel">
       <!-- Navbar -->
       <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top " id="navigation-example">
         <div class="container-fluid">
@@ -109,9 +111,9 @@
               </div>
             </form>
             <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="javascript:void(0)">
-                  <i class="material-icons">dashboard</i>
+              <li id="sidebarCollapsibleIcon" class="nav-item">
+                <a class="nav-link" title="toggle side menu" href="javascript:void(0)">
+                  <i class="material-icons">menu</i>
                   <p class="d-lg-none d-md-block">
                     Stats
                   </p>
@@ -152,132 +154,33 @@
             <div class="col-md-12">
               <div class="card">
                 <div class="card-header card-header-primary">
-                  <h4 class="card-title ">Simple Table</h4>
-                  <p class="card-category"> Here is a subtitle for this table</p>
+                  <h4 class="card-title ">Tag Questions</h4>
+                  <p class="card-category">Below are the questions which have been attempted by you but not yet tagged</p>
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
-                    <table class="table">
-                      <thead class=" text-primary">
+                    <table class="listOfquestions table">
+                      <thead class="text-primary">
                         <th>
                           ID
                         </th>
                         <th>
-                          Name
+                          Problem
                         </th>
                         <th>
-                          Country
+                          Status
                         </th>
                         <th>
-                          City
+                          Section
                         </th>
                         <th>
-                          Salary
+                          Tag
+                        </th>
+                        <th>
+
                         </th>
                       </thead>
-                      <tbody>
-                        <tr>
-                          <td>
-                            1
-                          </td>
-                          <td>
-                            Dakota Rice
-                          </td>
-                          <td>
-                            Niger
-                          </td>
-                          <td>
-                            Oud-Turnhout
-                          </td>
-                          <td class="text-primary">
-                            $36,738
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            2
-                          </td>
-                          <td>
-                            Minerva Hooper
-                          </td>
-                          <td>
-                            Curaçao
-                          </td>
-                          <td>
-                            Sinaai-Waas
-                          </td>
-                          <td class="text-primary">
-                            $23,789
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            3
-                          </td>
-                          <td>
-                            Sage Rodriguez
-                          </td>
-                          <td>
-                            Netherlands
-                          </td>
-                          <td>
-                            Baileux
-                          </td>
-                          <td class="text-primary">
-                            $56,142
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            4
-                          </td>
-                          <td>
-                            Philip Chaney
-                          </td>
-                          <td>
-                            Korea, South
-                          </td>
-                          <td>
-                            Overland Park
-                          </td>
-                          <td class="text-primary">
-                            $38,735
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            5
-                          </td>
-                          <td>
-                            Doris Greene
-                          </td>
-                          <td>
-                            Malawi
-                          </td>
-                          <td>
-                            Feldkirchen in Kärnten
-                          </td>
-                          <td class="text-primary">
-                            $63,542
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            6
-                          </td>
-                          <td>
-                            Mason Porter
-                          </td>
-                          <td>
-                            Chile
-                          </td>
-                          <td>
-                            Gloucester
-                          </td>
-                          <td class="text-primary">
-                            $78,615
-                          </td>
-                        </tr>
+                      <tbody id="listOfUnmarkedQuestions">
                       </tbody>
                     </table>
                   </div>
@@ -708,6 +611,7 @@
       });
     });
   </script>
+  <script src="../dashboard_assets/js/core/bootstrap-multiselect.js"></script>
   <script src="../dashboard_assets/js/custom_tag.js"></script>
 </body>
 
