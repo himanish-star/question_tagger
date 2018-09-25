@@ -17,4 +17,5 @@ ul.multiselect-container {
 #waitMessage {
   color: white;
   font-weight: bold;
+  display: none;
 }

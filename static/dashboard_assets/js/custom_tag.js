@@ -98,5 +98,5 @@ window.onload = () => {
   }
 
   //fetch on page load
-  fetchList();
+  // fetchList();
 }

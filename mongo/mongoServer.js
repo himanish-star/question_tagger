@@ -23,7 +23,29 @@ const Problems = {
 };
 
 const UserTaggingStatus = {
-  //todo: complete
+  extractQuestions: (query) => {
+    return new Promise((res, rej) => {
+      userTaggingStatus.findOne(query, (err, data) => {
+        if(err) rej(err);
+        res(data);
+      })
+    });
+  },
+  insertQuestions: (query) => {
+    return new Promise(function(res, rej) {
+      userTaggingStatus.insertOne(query, (err, data) => {
+        if(err) rej(err);
+        res(data);
+      })
+    });
+  },
+  updateQuestions: (query, update) => {
+    return new Promise(async function(res, rej) {
+      const result = await userTaggingStatus.updateOne(query, update);
+      if(!result) rej('question updation failed');
+      res('questions updated')
+    });
+  }
 };
 
 const Users = {
@@ -52,4 +74,4 @@ const Users = {
   }
 };
 
-module.exports = { Users, Problems };
+module.exports = { Users, Problems, UserTaggingStatus };
