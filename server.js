@@ -38,6 +38,10 @@ app.get('/tag', (req, res) => {
   res.sendFile(__dirname + '/static/templates/d_tag.html');
 });
 
+app.get('/taggedQuestions', (req, res) => {
+  res.sendFile(__dirname + '/static/templates/d_taggedDisplay.html');
+});
+
 app.get('/fetchMasterTable', (req, res) => {
 
 });
