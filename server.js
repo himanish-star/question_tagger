@@ -42,6 +42,12 @@ app.get('/fetchMasterTable', (req, res) => {
 
 });
 
+app.post('/markQuestion', (req, res) => {
+  const tags = req.body.tags;
+  markQuestionBackend(req.session.username, tags, req.body.problemcode);
+  res.send('marked questions in the backend');
+});
+
 app.get('/fetchUserQuestionsTable', (req, res) => {
   const username = req.session.username;
   mongoUtilities.UserTaggingStatus.extractQuestions({ "username": username })
@@ -49,7 +55,7 @@ app.get('/fetchUserQuestionsTable', (req, res) => {
       res.send(JSON.stringify(data.questionsList));
     })
     .catch((err) => {
-      console.log('there was an error in fetching the list of questions');
+      console.log(err);
     });
 });
 
@@ -75,7 +81,7 @@ app.get('/updateUserQuestionsTable', async (req, res) => {
       if(data.status === 'error') {
         delete req.session.username;
         console.log('session expired, implement the code to work for #refresh_token');
-        res.redirect('/');
+        res.send('auth error');
       }
       const list = await extractListOfQuestions(data.result.data.content.problemStats);
       readUserQuestionListFromDatabase(list, username);
@@ -102,7 +108,7 @@ app.get('/userDetails', (req, res) => {
     .then((data) => {
       res.send(data);
     })
-    .catch((err) => {
+      .catch((err) => {
       res.send(err);
     });
 });
@@ -150,7 +156,7 @@ app.get('/redirect', (req, res) => {
                 console.log(msg);
               })
               .catch((err) => {
-                console.error('update user error', err);
+                console.error(err);
               });
           } else {
             mongoUtilities.Users.storeUser({
@@ -163,12 +169,12 @@ app.get('/redirect', (req, res) => {
                 console.log(msg);
               })
               .catch((err) => {
-                console.error('store user error');
+                console.error(err);
               });
           }
         })
         .catch(err => {
-          console.error('find user error');
+          console.error(err);
         });
       req.session.username = userDetails.username;
       res.redirect('/dashboard');
@@ -183,6 +189,40 @@ app.listen(5000, () => {
 });
 
 //functions :)
+
+const markQuestionBackend = (username, tags, problemcode) => {
+  mongoUtilities.UserTaggingStatus.extractQuestions({ "username": username })
+    .then(data => {
+      let found = false;
+      let questionsList = JSON.parse(data.questionsList);
+      for(let question of questionsList) {
+        if(question.problemcode === problemcode) {
+          question.tagged = true;
+          question.tags = tags;
+          found = true;
+          break;
+        }
+      }
+      if(found) {
+        mongoUtilities.UserTaggingStatus.updateQuestions({
+          "username": username
+        }, {
+          $set: {
+            "questionsList": JSON.stringify(questionsList)
+          }
+        })
+          .then((data) => {
+            console.log('question marked successfully');
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 const getUserName = (access_token) => {
   return new Promise((resolve, reject) => {
@@ -282,7 +322,7 @@ const regenerateAccessToken = (refresh_token, username) => {
           console.log(msg);
         })
         .catch((err) => {
-          console.error('update user error', err);
+          console.error(err);
         });
     })
   });
@@ -334,7 +374,7 @@ const readUserQuestionListFromDatabase = (onlineList, username) => {
               console.log("Backend updated with Online List");
             })
             .catch((msg) => {
-              console.log("Backend couldn't be updated successfully :(");
+              console.log(msg);
             });
         } catch(e) {
           console.log("error occurred while updating the backend list with the online list");
@@ -342,6 +382,6 @@ const readUserQuestionListFromDatabase = (onlineList, username) => {
       }
     })
     .catch((err) => {
-      console.log('extract questions error');
+      console.log(err);
     })
 }

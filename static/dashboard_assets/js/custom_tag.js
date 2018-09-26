@@ -32,6 +32,9 @@ window.onload = () => {
 
   const updateList = () => {
     $.get('/updateUserQuestionsTable', (msg) => {
+      if(msg === "auth error") {
+        window.location.href = "/";
+      }
       $('#updateStartMessage').hide();
       $('#updateEndMessage').show();
       setTimeout(() => {
@@ -48,11 +51,35 @@ window.onload = () => {
     })
   }
 
+  const markQuestion = (index, elem, data) => {
+    let tags = $(`#multipleTag${index}`)
+      .next()[0]
+      .getElementsByTagName('button')[0]
+      .title
+      .split(',');
+    if(tags[0] === "None selected") {
+      return;
+    }
+    tags.map((tag, i, arr) => {
+      arr[i] = tag.trim();
+    });
+    $.post('/markQuestion', {
+      "problemcode": data[index].problemcode,
+      "tags": tags
+    }, (data) => {
+      elem.disabled = true;
+      window.location.reload();
+    });
+  };
+
   const displayList = (data) => {
     const host = "https://www.codechef.com";
     data = JSON.parse(JSON.parse(data));
     listOfUnmarkedQuestions.text('');
     $('#waitMessage').hide();
+    data = data.filter((problem) => {
+      return !problem.tagged;
+    });
     data.forEach((problem, i) => {
       const sectionPath = problem.category === 'Practice Problems' ? 'problems' : problem.category + '/problems';
       listOfUnmarkedQuestions.append(`
@@ -102,10 +129,12 @@ window.onload = () => {
               <option value="MO’s Algorithm">MO’s Algorithm</option>
             </select>
           </td>
-          <td><button class="btn btn-success">mark</button></td>
+          <td><button class="btn markBtns btn-success">mark</button></td>
         </tr>
       `);
-      $(`#multipleTag${i}`).multiselect();
+      $(`#multipleTag${i}`).multiselect({
+        numberDisplayed: 1
+      });
     });
     $('.multiselect-container').each((i, parElem) => {
       Array(parElem.getElementsByTagName('label')).forEach(elem => {
@@ -113,6 +142,12 @@ window.onload = () => {
           elem[index].style.width = '200px';
         }
       });
+    });
+    $('.markBtns').each((i, elem) => {
+      elem.onclick = (e) => {
+        e.preventDefault();
+        markQuestion(i, elem, data);
+      };
     });
   }
 
