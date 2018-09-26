@@ -1,9 +1,11 @@
 window.onload = () => {
   const fetchSomeBtn = $('#fetchSomeBtn');
+  const updateBtn = $('#updateBtn');
   const mainPanel = $('#mainPanel');
   const sidebarCollapsible = $('#sidebarCollapsible');
   const sidebarCollapsibleIcon = $('#sidebarCollapsibleIcon');
   const listOfUnmarkedQuestions = $('#listOfUnmarkedQuestions');
+  const userQuestionsList = localStorage.getItem('userQuestionsList');
 
   sidebarCollapsibleIcon[0].onclick = (e) => {
     e.preventDefault();
@@ -21,6 +23,23 @@ window.onload = () => {
     fetchList();
   };
 
+  updateBtn[0].onclick = (e) => {
+    e.preventDefault();
+    $('#updateStartMessage').show();
+    updateList();
+  };
+
+
+  const updateList = () => {
+    $.get('/updateUserQuestionsTable', (msg) => {
+      $('#updateStartMessage').hide();
+      $('#updateEndMessage').show();
+      setTimeout(() => {
+        $('#updateEndMessage').hide();
+      }, 2000);
+    });
+  };
+
   const fetchList = () => {
     $('#waitMessage').show();
     $.get('/fetchUserQuestionsTable', (data) => {
@@ -31,7 +50,7 @@ window.onload = () => {
 
   const displayList = (data) => {
     const host = "https://www.codechef.com";
-    data = JSON.parse(data);
+    data = JSON.parse(JSON.parse(data));
     listOfUnmarkedQuestions.text('');
     $('#waitMessage').hide();
     data.forEach((problem, i) => {
@@ -98,5 +117,10 @@ window.onload = () => {
   }
 
   //fetch on page load
-  // fetchList();
+  if(userQuestionsList && userQuestionsList.length) {
+    fetchList(userQuestionsList);
+  } else {
+    window.alert("No list of questions available, please fetch your questions")
+  }
+  //fetchList();
 }

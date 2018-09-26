@@ -42,7 +42,18 @@ app.get('/fetchMasterTable', (req, res) => {
 
 });
 
-app.get('/fetchUserQuestionsTable', async (req, res) => {
+app.get('/fetchUserQuestionsTable', (req, res) => {
+  const username = req.session.username;
+  mongoUtilities.UserTaggingStatus.extractQuestions({ "username": username })
+    .then((data) => {
+      res.send(JSON.stringify(data.questionsList));
+    })
+    .catch((err) => {
+      console.log('there was an error in fetching the list of questions');
+    });
+});
+
+app.get('/updateUserQuestionsTable', async (req, res) => {
   const username = req.session.username;
   const tempResults = await mongoUtilities.Users.findUser({ "username": username});
   const options = {
@@ -68,7 +79,7 @@ app.get('/fetchUserQuestionsTable', async (req, res) => {
       }
       const list = await extractListOfQuestions(data.result.data.content.problemStats);
       readUserQuestionListFromDatabase(list, username);
-      res.send(JSON.stringify(list));
+      res.send('updation done');
     });
   })
   request.end();

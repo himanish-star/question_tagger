@@ -19,3 +19,15 @@ ul.multiselect-container {
   font-weight: bold;
   display: none;
 }
+
+#updateStartMessage {
+  color: white;
+  font-weight: bold;
+  display: none;
+}
+
+#updateEndMessage {
+  color: white;
+  font-weight: bold;
+  display: none;
+}
