@@ -38,6 +38,17 @@ app.get('/tag', (req, res) => {
   res.sendFile(__dirname + '/static/templates/d_tag.html');
 });
 
+app.get('/markedQuestions', (req, res) => {
+  const username = req.session.username;
+  mongoUtilities.UserTaggingStatus.extractQuestions({ "username": username })
+    .then(data => {
+      res.send(data.questionsList);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
+
 app.get('/taggedQuestions', (req, res) => {
   res.sendFile(__dirname + '/static/templates/d_taggedDisplay.html');
 });

@@ -1,0 +1,9 @@
+.dark-edition .table>thead>tr>th {
+  font-weight: bold;
+  color: yellow;
+}
+
+.dark-edition .table>tbody>tr>td {
+  font-weight: bold;
+  color: orange;
+}
