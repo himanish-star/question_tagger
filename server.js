@@ -57,6 +57,15 @@ app.get('/fetchMasterTable', (req, res) => {
 
 });
 
+app.get('/analyseTopics', (req, res) => {
+  res.sendFile(__dirname + '/static/templates/d_analyseTopics.html');
+});
+
+app.post('/searchTag', (req, res) => {
+  const tagName = req.body.tagName;
+  res.send('pup');
+});
+
 app.post('/markQuestion', (req, res) => {
   const tags = req.body.tags;
   markQuestionBackend(req.session.username, tags, req.body.problemcode);
