@@ -2,6 +2,10 @@
   color: white;
 }
 
+#waitMessage {
+  display: none;
+}
+
 .dark-edition .form-control option{
   color: black;
 }

@@ -86,9 +86,36 @@ app.post('/searchTag', async (req, res) => {
   }
 });
 
-app.post('/problemDetails', (req, res) => {
+app.post('/problemDetails', async (req, res) => {
   const problemcode = req.body.problemcode;
-  
+  const username = req.session.username;
+
+  try {
+    const tempResults = await mongoUtilities.Users.findUser({ "username": username});
+    const option = {
+      "host": "api.codechef.com",
+      "path": `/submissions/?result=&year=&username=${username}&language=&problemCode=${problemcode}&contestCode=&fields=`,
+      "method": "GET",
+      "headers": {
+        "content-Type": "application/json",
+        "Authorization": `Bearer ${tempResults.access_token}`
+      }
+    }
+    const request = https.request(option, (response) => {
+      let data = "";
+      response.on('data', (chunk) => {
+        data += chunk;
+      });
+      response.on('end', () => {
+        console.log(response.statusCode);
+        res.send(data);
+      });
+    });
+    request.end();
+  } catch(err) {
+    console.log(err);
+    res.redirect('/');
+  }
 });
 
 app.post('/markQuestion', (req, res) => {
