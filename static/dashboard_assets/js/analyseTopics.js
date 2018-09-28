@@ -4,18 +4,21 @@ window.onload = () => {
 
   tagSearchBtn[0].onclick = (e) => {
     e.preventDefault();
-
     const tag = tagToSearch.val();
 
-    if(!tag)
+    if(!tag || tag === 'NA')
       return;
 
     $.post('/searchTag', {
       "tagName": tag
     },
     (data) => {
-      console.log("Coming from the backend", data);
+      fetchAndDisplayDetails(data);
       tagToSearch.val("");
     });
+  };
+
+  const fetchAndDisplayDetails = (problemCodes) => {
+    
   };
 };

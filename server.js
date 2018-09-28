@@ -61,9 +61,34 @@ app.get('/analyseTopics', (req, res) => {
   res.sendFile(__dirname + '/static/templates/d_analyseTopics.html');
 });
 
-app.post('/searchTag', (req, res) => {
+app.post('/searchTag', async (req, res) => {
   const tagName = req.body.tagName;
-  res.send('pup');
+  const username = req.session.username;
+  try {
+    const list = await mongoUtilities.UserTaggingStatus.extractQuestions({ "username": username });
+    let problemCodes = [];
+    JSON.parse(list.questionsList).forEach(problem => {
+      if(problem.tagged) {
+        let found = false;
+        for(let tag of problem.tags) {
+          if(tag === tagName) {
+            found = true;
+            break;
+          }
+        }
+        if(found)
+          problemCodes.push(problem.problemcode);
+      }
+    });
+    res.send(problemCodes);
+  } catch(err) {
+    console.log(err);
+  }
+});
+
+app.post('/problemDetails', (req, res) => {
+  const problemcode = req.body.problemcode;
+  
 });
 
 app.post('/markQuestion', (req, res) => {
