@@ -29,44 +29,36 @@ window.onload = () => {
     startTest();
   };
 
+  const returnProblemDescription = (testcode) => {
+    return new Promise(function(resolve, reject) {
+      $.post('/problemDescription', {
+        "problemCode": testcode.split('/')[1],
+        "contestCode": testcode.split('/')[0]
+      }, (data) => {
+        resolve(data);
+      });
+    });
+  };
+
   const startTest = async () => {
     const testCodes = await JSON.parse(localStorage.getItem('testCode'));
     listDisplayRow.html("");
-    const questionsFittedToTemplates = testCodes.map(testcode => {
+    const questionsFittedToTemplates = testCodes.map(async testcode => {
+      const data = returnProblemDescription(testcode);
+      return data;
+    });
+
+    const cumulativeData = await Promise.all(questionsFittedToTemplates);
+    cumulativeData.forEach(data => {
+      data = JSON.parse(data).result.data.content;
+      const { body, problemName } = data;
       listDisplayRow.append(`
         <div class="column">
           <div class="question card">
-            <h5 id="problemcode" class="card-header">asas</h5>
+            <h5 id="problemcode" class="card-header">${problemName}</h5>
             <div class="card-body">
               <h5 class="card-title">Submission Details</h5>
-              <table class="table table-striped">
-                <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>Accepted</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>Wrong Answer</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td>Run Time Error</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">4</th>
-                    <td>Compile Time Error</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">5</th>
-                    <td>Time Limit Exceeded</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">6</th>
-                    <td>Others</td>
-                  </tr>
-                </tbody>
-              </table>
+              ${body}
               <a target="_blank" class="btn btn-primary">View</a>
               <a class="addForImprovement btn btn-success"><i class="material-icons">add</i></a>
             </div>

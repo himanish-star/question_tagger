@@ -8,6 +8,13 @@
 
 .dark-edition .question.card {
   background-color: white;
+  text-align:  left;
+  color: black;
+  font-family:  sans-serif;
+}
+
+.dark-edition .question.card a {
+    color: black;
 }
 
 /* Float four columns side by side */

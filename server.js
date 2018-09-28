@@ -90,6 +90,44 @@ app.post('/searchTag', async (req, res) => {
   }
 });
 
+app.post('/problemDescription', async (req, res) => {
+  const { problemCode, contestCode } = req.body;
+  const username = req.session.username;
+
+  try {
+    const tempResults = await mongoUtilities.Users.findUser({ "username": username});
+    const option = {
+      "host": "api.codechef.com",
+      "path": `/contests/${contestCode}/problems/${problemCode}?fields=`,
+      "method": "GET",
+      "headers": {
+        "content-Type": "application/json",
+        "Authorization": `Bearer ${tempResults.access_token}`
+      }
+    };
+
+    const request = https.request(option, (response) => {
+      let data = "";
+      response.on('data', chunk => {
+        data += chunk;
+      });
+      response.on('end', () => {
+        if(response.statusCode === 401) {
+          console.log("unauthorized");
+          delete res.session.username;
+          res.redirect('/');
+          return;
+        }
+        // fs.writeFileSync('temp.json', JSON.stringify(JSON.parse(data), null, '\t'));
+        res.send(data);
+      });
+    });
+    request.end();
+  } catch(err) {
+
+  }
+});
+
 app.post('/problemDetails', async (req, res) => {
   const problemcode = req.body.problemcode;
   const username = req.session.username;
