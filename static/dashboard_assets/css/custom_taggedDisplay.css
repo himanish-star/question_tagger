@@ -3,6 +3,10 @@
   color: yellow;
 }
 
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 .dark-edition .table>tbody>tr>td {
   font-weight: bold;
   color: orange;

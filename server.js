@@ -38,6 +38,10 @@ app.get('/tag', (req, res) => {
   res.sendFile(__dirname + '/static/templates/d_tag.html');
 });
 
+app.get('/testGenerate', (req, res) => {
+  res.sendFile(__dirname + '/static/templates/d_testGenerator.html');
+});
+
 app.get('/markedQuestions', (req, res) => {
   const username = req.session.username;
   mongoUtilities.UserTaggingStatus.extractQuestions({ "username": username })
@@ -107,7 +111,12 @@ app.post('/problemDetails', async (req, res) => {
         data += chunk;
       });
       response.on('end', () => {
-        console.log(response.statusCode);
+        if(response.statusCode === 401) {
+          console.log("access_token has expired");
+          delete req.session.username;
+          res.redirect('/');
+          return;
+        }
         res.send(data);
       });
     });
@@ -154,10 +163,12 @@ app.get('/updateUserQuestionsTable', async (req, res) => {
     });
     response.on('end', async () => {
       data = JSON.parse(data);
-      if(data.status === 'error') {
+      if(response.statusCode === 401) {
+        console.log("access_token has expired");
         delete req.session.username;
         console.log('session expired, implement the code to work for #refresh_token');
-        res.send('auth error');
+        res.redirect('/');
+        return;
       }
       const list = await extractListOfQuestions(data.result.data.content.problemStats);
       readUserQuestionListFromDatabase(list, username);
@@ -318,6 +329,11 @@ const getUserName = (access_token) => {
       });
       response.on('end', () => {
         data = JSON.parse(data);
+        if(response.statusCode === 401) {
+          console.log('access_token has expired');
+          res.redirect('/');
+          return;
+        }
         resolve({
           username: data.result.data.content.username,
           fullname: data.result.data.content.fullname

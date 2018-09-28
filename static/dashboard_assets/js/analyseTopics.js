@@ -31,17 +31,17 @@ window.onload = () => {
     displayDetails(completeData);
   };
 
-  const displayDetails = (dataList) => {
+  const displayDetails = async (dataList) => {
     console.log(dataList);
     listDisplayRow.html('');
-    dataList.forEach(async data => {
+    const promiseList = dataList.map(async (data, i) => {
       const { AC, WA, RE, CTE, TLE, others, contest, problem} = await dataManipulate(data);
       const link = contest == "practice" ? `https://codechef.com/problems/${problem}`  :
         `https://codechef.com/${contest}/problems/${problem}`;
       listDisplayRow.append(`
         <div class="column">
           <div class="question card">
-            <h5 class="card-header">${contest}/${problem}</h5>
+            <h5 id="problemcode${i}" class="card-header">${contest}/${problem}</h5>
             <div class="card-body">
               <h5 class="card-title">Submission Details</h5>
               <table class="table table-striped">
@@ -79,10 +79,28 @@ window.onload = () => {
                 </tbody>
               </table>
               <a href=${link} target="_blank" class="btn btn-primary">View</a>
+              <a class="addForImprovement btn btn-success"><i class="material-icons">add</i></a>
             </div>
           </div>
         </div>
       `);
+    });
+    await Promise.all(promiseList);
+
+    $('.addForImprovement').each((index, elem) => {
+      elem.onclick = (e) => {
+        e.preventDefault();
+        const textTag = document.getElementById(`problemcode${index}`).innerText;
+        if(localStorage.getItem('questionsForImprovement')) {
+          let list = JSON.parse(localStorage.getItem('questionsForImprovement'));
+          list.push(textTag);
+          localStorage.setItem('questionsForImprovement', JSON.stringify(list));
+        } else {
+          let list = [];
+          list.push(textTag);
+          localStorage.setItem('questionsForImprovement', JSON.stringify(list));
+        }
+      };
     });
     waitMessage.hide();
   };
