@@ -52,6 +52,7 @@ window.onload = () => {
     cumulativeData.forEach(data => {
       data = JSON.parse(data).result.data.content;
       const { body, problemName } = data;
+      console.log(data);
       listDisplayRow.append(`
         <div class="column">
           <div class="question card">
@@ -59,8 +60,10 @@ window.onload = () => {
             <div class="card-body">
               <h5 class="card-title">Submission Details</h5>
               ${body}
-              <a target="_blank" class="btn btn-primary">View</a>
-              <a class="addForImprovement btn btn-success"><i class="material-icons">add</i></a>
+              <form ref='uploadCode' id='uploadCode' action='/codeUpload' method='post' encType="multipart/form-data">
+                <input type="file" name="code" />
+                <input type='submit' value='Submit' />
+              </form>
             </div>
           </div>
         </div>

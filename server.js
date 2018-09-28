@@ -6,6 +6,7 @@ const https = require('https');
 const session = require('express-session');
 const mongoUtilities = require('./mongo/mongoServer.js');
 const fs = require('fs');
+const fileUpload = require('express-fileupload');
 
 app.use(session({
   secret: 'keyboard cat',
@@ -114,7 +115,7 @@ app.post('/problemDescription', async (req, res) => {
       response.on('end', () => {
         if(response.statusCode === 401) {
           console.log("unauthorized");
-          delete res.session.username;
+          delete req.session.username;
           res.redirect('/');
           return;
         }
@@ -307,6 +308,20 @@ app.get('/redirect', (req, res) => {
   });
   request.write(JSON.stringify(post_body));
   request.end();
+});
+
+app.use(fileUpload());
+app.post('/codeUpload', (req, res) => {
+  if (!req.files)
+    return res.status(400).send('No files were uploaded.');
+
+  const code = req.files.code;
+
+  code.mv(__dirname + '/submissions/' + req.session.username + '_' + code.name, function(err) {
+    if (err)
+      return res.status(500).send(err);
+    res.send('File uploaded!');
+  });
 });
 
 app.listen(5000, () => {
