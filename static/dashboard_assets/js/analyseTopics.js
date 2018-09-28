@@ -11,6 +11,7 @@ window.onload = () => {
     if(!tag || tag === 'NA')
       return;
 
+    waitMessage.show();
     $.post('/searchTag', {
       "tagName": tag
     },
@@ -34,7 +35,7 @@ window.onload = () => {
     console.log(dataList);
     listDisplayRow.html('');
     dataList.forEach(async data => {
-      const { AC, WA, RE, CTE, others, contest, problem} = await dataManipulate(data);
+      const { AC, WA, RE, CTE, TLE, others, contest, problem} = await dataManipulate(data);
       const link = contest == "practice" ? `https://codechef.com/problems/${problem}`  :
         `https://codechef.com/${contest}/problems/${problem}`;
       listDisplayRow.append(`
@@ -67,6 +68,11 @@ window.onload = () => {
                   </tr>
                   <tr>
                     <th scope="row">5</th>
+                    <td>Time Limit Exceeded</td>
+                    <td>${TLE}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">6</th>
                     <td>Others</td>
                     <td>${others}</td>
                   </tr>
@@ -78,6 +84,7 @@ window.onload = () => {
         </div>
       `);
     });
+    waitMessage.hide();
   };
 
   const dataManipulate = (data) => {
@@ -87,6 +94,7 @@ window.onload = () => {
       let WA = 0;
       let RE = 0;
       let CTE = 0;
+      let TLE = 0;
       let others = 0;
       let contest, problem;
       content.forEach(frags => {
@@ -100,6 +108,8 @@ window.onload = () => {
           RE++;
         else if(frags.result === 'CTE')
           CTE++;
+        else if(frags.result === 'TLE')
+          TLE++;
         else
           others++;
       });
@@ -108,6 +118,7 @@ window.onload = () => {
         "WA": WA,
         "RE": RE,
         "CTE": CTE,
+        "TLE": TLE,
         "others": others,
         "contest": contest,
         "problem": problem
