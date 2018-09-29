@@ -10,15 +10,16 @@
   color: black;
 }
 
-.dark-edition .question.card {
-  background-color: white;
-  text-align:  left;
-  color: black;
-  font-family:  sans-serif;
+* {
+  box-sizing: border-box;
 }
 
-.dark-edition .question.card a {
-    color: black;
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.dark-edition .question.card {
+  background-color: white;
 }
 
 /* Float four columns side by side */
@@ -42,7 +43,7 @@
 .qDisplay .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* this adds the "card" effect */
   padding: 16px;
-  text-align: center;
+  text-align: left;
   background-color: #f1f1f1;
 }
 

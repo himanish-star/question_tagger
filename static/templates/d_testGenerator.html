@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="../dashboard_assets/img/favicon.png">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
-    Material Dashboard Dark Edition by Creative Tim
+    Question Tagger
   </title>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   <!--     Fonts and icons     -->
@@ -29,13 +29,13 @@
         Tip 2: you can also add an image using data-image tag
     -->
       <div class="logo">
-        <a href="http://www.creative-tim.com" class="simple-text logo-normal">
-          Creative Tim
+        <a href="/dashboard" class="simple-text logo-normal">
+          question tagger
         </a>
       </div>
       <div class="sidebar-wrapper">
         <<ul class="nav">
-          <li class="nav-item active  ">
+          <li class="nav-item   ">
             <a class="nav-link" href="/dashboard">
               <i class="material-icons">dashboard</i>
               <p>Dashboard</p>
@@ -59,7 +59,7 @@
               <p>Analyse Topics</p>
             </a>
           </li>
-          <li class="nav-item ">
+          <li class="nav-item active">
             <a class="nav-link" href="/testGenerate">
               <i class="material-icons">code</i>
               <p>Start Test</p>
@@ -97,7 +97,7 @@
       <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top " id="navigation-example">
         <div class="container-fluid">
           <div class="navbar-wrapper">
-            <a class="navbar-brand" href="javascript:void(0)">Typography</a>
+            <a id="usernameDisplay" class="navbar-brand" href="javascript:void(0)"></a>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation" data-target="#navigation-example">
             <span class="sr-only">Toggle navigation</span>
@@ -106,7 +106,7 @@
             <span class="navbar-toggler-icon icon-bar"></span>
           </button>
           <div class="collapse navbar-collapse justify-content-end">
-            <form class="navbar-form">
+            <!-- <form class="navbar-form">
               <div class="input-group no-border">
                 <input type="text" value="" class="form-control" placeholder="Search...">
                 <button type="submit" class="btn btn-default btn-round btn-just-icon">
@@ -114,9 +114,9 @@
                   <div class="ripple-container"></div>
                 </button>
               </div>
-            </form>
+            </form> -->
             <ul class="navbar-nav">
-              <li class="nav-item">
+              <!-- <li class="nav-item">
                 <a class="nav-link" href="javascript:void(0)">
                   <i class="material-icons">dashboard</i>
                   <p class="d-lg-none d-md-block">
@@ -139,12 +139,12 @@
                   <a class="dropdown-item" href="javascript:void(0)">Another Notification</a>
                   <a class="dropdown-item" href="javascript:void(0)">Another One</a>
                 </div>
-              </li>
-              <li class="nav-item">
+              </li> -->
+              <li id="logoutIcon" class="nav-item">
                 <a class="nav-link" href="javascript:void(0)">
-                  <i class="material-icons">person</i>
+                  <i class="material-icons">logout</i>
                   <p class="d-lg-none d-md-block">
-                    Account
+                    Logout
                   </p>
                 </a>
               </li>
@@ -169,6 +169,7 @@
                     <input id="exampleFormControlSelect1" class="form-control" type="number">
                   </div>
                   <br>
+                  <button id="clearImprovementList" class="btn btn-danger">Clear improvement list</button>
                   <button id="phase1Next" class="btn btn-success">Next</button>
                 </div>
                 <div id="stage2">
@@ -176,10 +177,11 @@
                   </div>
                   <button id="phase2Next" class="btn btn-success">Start Test</button>
                 </div>
-                <div id="stage3">
-                  <button id="testStopBtn"><button>
-                  <div id="listDisplay" class="qDisplay row">
-                  </div>
+                <div class="container" id="stage3">
+                  <button class="btn btn-warning" id="testStopBtn">Stop Test</button>
+                </div>
+                <div style="display: none;" class="alert alert-warning" id="waitMessage">Starting Test In A Moment</div>
+                <div style="display: none;" id="listDisplay" class="qDisplay row">
                 </div>
               </div>
             </div>
@@ -225,7 +227,7 @@
       </script>
     </div>
   </div>
-  <div class="fixed-plugin">
+  <!-- <div class="fixed-plugin">
     <div class="dropdown show-dropdown">
       <a href="#" data-toggle="dropdown">
         <i class="fa fa-cog fa-2x"> </i>
@@ -268,12 +270,12 @@
         <li class="button-container">
           <a href="https://www.creative-tim.com/product/material-dashboard-dark" target="_blank" class="btn btn-primary btn-block">Free Download</a>
         </li>
-        <!-- <li class="header-title">Want more components?</li>
+        <li class="header-title">Want more components?</li>
             <li class="button-container">
                 <a href="https://www.creative-tim.com/product/material-dashboard-pro" target="_blank" class="btn btn-warning btn-block">
                   Get the pro version
                 </a>
-            </li> -->
+            </li>
         <li class="button-container">
           <a href="https://demos.creative-tim.com/material-dashboard-dark/docs/2.0/getting-started/introduction.html" target="_blank" class="btn btn-default btn-block">
             View Documentation
@@ -291,7 +293,7 @@
         </li>
       </ul>
     </div>
-  </div>
+  </div> -->
   <!--   Core JS Files   -->
   <script src="../dashboard_assets/js/core/jquery.min.js"></script>
   <script src="../dashboard_assets/js/core/popper.min.js"></script>

@@ -8,16 +8,37 @@ window.onload = () => {
   const testStopBtn = $('#testStopBtn');
   const phase2NextBtn = $('#phase2Next');
   const listDisplayRow = $('#listDisplay');
+  const usernameDisplay = $('#usernameDisplay');
+  const clearImprovementList = $('#clearImprovementList');
+  const logoutIcon = $('#logoutIcon');
+  const waitMessage = $('#waitMessage');
+
+  logoutIcon[0].onclick = (e) => {
+    e.preventDefault();
+    window.location.href = '/logout';
+  };
+
+  clearImprovementList[0].onclick = (e) => {
+    e.preventDefault();
+    localStorage.removeItem('questionsForImprovement');
+  };
+
+  usernameDisplay.text(JSON.parse(localStorage.getItem('user_data')).username);
 
   testStopBtn[0].onclick = (e) => {
     e.preventDefault();
-    stage3.hide();
-    stage1.show();
+    localStorage.setItem('testProgress', false);
+    localStorage.removeItem('cumulativeData');
+    window.location.reload();
   };
 
   phase1NextBtn[0].onclick = (e) => {
     e.preventDefault();
-    if(!timeOfTest.val() || !numberOfQuestions.val()) {
+    if(!numberOfQuestions.val()) {
+      return;
+    }
+    if(!localStorage.getItem('questionsForImprovement')) {
+      alert('add questions for improvement!');
       return;
     }
     stage1.hide();
@@ -33,6 +54,7 @@ window.onload = () => {
     }
     localStorage.setItem('testCode', JSON.stringify(testCodes));
     stage2.hide();
+    waitMessage.show();
     startTest();
   };
 
@@ -47,20 +69,13 @@ window.onload = () => {
     });
   };
 
-  const startTest = async () => {
-    const testCodes = await JSON.parse(localStorage.getItem('testCode'));
-    listDisplayRow.html("");
-    const questionsFittedToTemplates = testCodes.map(async testcode => {
-      const data = returnProblemDescription(testcode);
-      return data;
-    });
-
-    const cumulativeData = await Promise.all(questionsFittedToTemplates);
+  const tempDisplay = (cumulativeData) => {
     stage3.show();
+    listDisplayRow.show();
+    waitMessage.hide();
     cumulativeData.forEach((data, index) => {
       data = JSON.parse(data).result.data.content;
       const { body, problemName } = data;
-      console.log(data);
       listDisplayRow.append(`
         <div class="column">
           <div class="question card">
@@ -92,6 +107,20 @@ window.onload = () => {
     });
   };
 
+  const startTest = async () => {
+    localStorage.setItem('testProgress', true);
+    const testCodes = await JSON.parse(localStorage.getItem('testCode'));
+    listDisplayRow.html("");
+    const questionsFittedToTemplates = testCodes.map(async testcode => {
+      const data = returnProblemDescription(testcode);
+      return data;
+    });
+
+    const cumulativeData = await Promise.all(questionsFittedToTemplates);
+    localStorage.setItem('cumulativeData', JSON.stringify(cumulativeData));
+    tempDisplay(cumulativeData);
+  };
+
   const displayStage2 = async (noq, tot) => {
     if(localStorage.getItem('questionsForImprovement') && noq !== 0) {
       const list = $('#progressFilling');
@@ -119,4 +148,10 @@ window.onload = () => {
       return;
     }
   };
+
+  if(localStorage.getItem('cumulativeData') && localStorage.getItem('testProgress') === 'true') {
+    stage1.hide();
+    stage2.hide();
+    tempDisplay(JSON.parse(localStorage.getItem('cumulativeData')));
+  }
 };
