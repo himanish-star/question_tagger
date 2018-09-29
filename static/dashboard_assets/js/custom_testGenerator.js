@@ -49,7 +49,7 @@ window.onload = () => {
     });
 
     const cumulativeData = await Promise.all(questionsFittedToTemplates);
-    cumulativeData.forEach(data => {
+    cumulativeData.forEach((data, index) => {
       data = JSON.parse(data).result.data.content;
       const { body, problemName } = data;
       console.log(data);
@@ -60,14 +60,27 @@ window.onload = () => {
             <div class="card-body">
               <h5 class="card-title">Submission Details</h5>
               ${body}
-              <form ref='uploadCode' id='uploadCode' action='/codeUpload' method='post' encType="multipart/form-data">
+              <form ref='uploadCode' id='uploadCode${parseInt(index)}' action='/codeUpload' method='post' encType="multipart/form-data">
+                <textarea name="testCases" id = "myTextArea"
+                rows = "10"
+                cols = "50"></textarea>
+                <br>
+                <select name="languageChosen" id="languageChoices${parseInt(index)}"><select>
+                <br>
+                <br>
                 <input type="file" name="code" />
+                <input style="display: none" type="text" value="${problemName}" name="problemName"/>
                 <input type='submit' value='Submit' />
               </form>
             </div>
           </div>
         </div>
       `);
+      data.languagesSupported.forEach(language => {
+        $(`#languageChoices${parseInt(index)}`).append(`
+          <option value="${language}">${language}<option>
+        `);
+      });
     });
   };
 

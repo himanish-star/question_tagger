@@ -311,17 +311,53 @@ app.get('/redirect', (req, res) => {
 });
 
 app.use(fileUpload());
-app.post('/codeUpload', (req, res) => {
+app.post('/codeUpload', async (req, res) => {
   if (!req.files)
     return res.status(400).send('No files were uploaded.');
 
   const code = req.files.code;
+  const submitCode = code.data.toString();
+  const inputTestCases = req.body.testCases;
+  const languageOfSubmission = req.body.languageChosen;
+  const username = req.session.username;
+  const tempResults = await mongoUtilities.Users.findUser({ "username": username});
+  const problemName = req.body.problemName;
 
-  code.mv(__dirname + '/submissions/' + req.session.username + '_' + code.name, function(err) {
-    if (err)
-      return res.status(500).send(err);
-    res.send('File uploaded!');
+  const options = {
+    'method': 'POST',
+    'host': 'api.codechef.com',
+    'path': '/ide/run',
+    'headers': {
+      'content-Type': 'application/json',
+      'Authorization': `Bearer ${tempResults.access_token}`
+    }
+  };
+
+  const postBody = {
+    "sourceCode": submitCode,
+    "language": languageOfSubmission,
+    "input": inputTestCases
+  };
+
+  const request = https.request(options, (response) => {
+    let data = "";
+    response.on('data', (chunk) => {
+      data += chunk;
+    });
+    response.on('end', () => {
+      if(response.statusCode === 401) {
+        console.log("unauthorized");
+        delete req.session.username;
+        res.redirect('/');
+        return;
+      }
+      console.log(data);
+      console.log(problemName);
+      res.redirect('/testGenerate');
+    });
   });
+  request.write(JSON.stringify(postBody));
+  request.end();
 });
 
 app.listen(5000, () => {
