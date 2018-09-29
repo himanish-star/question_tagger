@@ -1,5 +1,14 @@
 window.onload = () => {
   const listDisplay = $('#listDisplay');
+  const usernameDisplay = $('#usernameDisplay');
+  const logoutIcon = $('#logoutIcon');
+
+  logoutIcon[0].onclick = (e) => {
+    e.preventDefault();
+    window.location.reload();
+  };
+
+  usernameDisplay.text(JSON.parse(localStorage.getItem('user_data')).username);
 
   $.get('/fetchAllLinksOfSubmittedProblems', (data) => {
     processStatusOfLinks(JSON.parse(data));
@@ -37,7 +46,11 @@ window.onload = () => {
           </div>
         `);
       } else {
-        //clear the details of the link from the backend
+        $.post('/deleteLinkOfProblem', {
+          "problemName": subpart.problem
+        }, (data) => {
+          console.log(data);
+        });
       }
     });
   }

@@ -373,8 +373,30 @@ app.get('/checkStatus', (req, res) => {
 });
 
 
-app.post('/deleteLinkOfProblem', (req, res) => {
-  
+app.post('/deleteLinkOfProblem', async (req, res) => {
+  const username = req.session.username;
+  const problemName = req.body.problemName;
+
+  try {
+    const result = await mongoUtilities.ProblemLinks.extractLinks({ "username": username });
+    const linksList = JSON.parse(result.listOfLinks);
+    let newLinksList = [];
+    linksList.forEach(elem => {
+      if(elem.problemName !== problemName) {
+        newLinksList.push(elem);
+      }
+    });
+    await mongoUtilities.ProblemLinks.updateLinks({
+      "username": username
+    },{
+      $set: {
+        "listOfLinks": JSON.stringify(newLinksList)
+      }
+    });
+    res.send('deletion of problem name done');
+  } catch(err) {
+    console.log(err);
+  }
 });
 
 app.post('/statusOfProblem', async (req, res) => {
