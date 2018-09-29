@@ -310,6 +310,60 @@ app.get('/redirect', (req, res) => {
   request.end();
 });
 
+app.get('/fetchAllLinksOfSubmittedProblems', async (req, res) => {
+  const username = req.session.username;
+  try {
+    const result = await mongoUtilities.ProblemLinks.extractLinks({ "username": username });
+    if(!result) {
+      res.send(JSON.stringify([]));
+    } else {
+      res.send(result.listOfLinks);
+    }
+  } catch(err) {
+    console.log(err);
+  }
+});
+
+app.get('/checkStatus', (req, res) => {
+  res.sendFile(__dirname + '/static/templates/d_statusDisplay.html');
+});
+
+app.post('/statusOfProblem', async (req, res) => {
+  const username = req.session.username;
+  try {
+    const temp_results = await mongoUtilities.Users.findUser({ "username": username });
+    const options = {
+      'method': 'GET',
+      'host': 'api.codechef.com',
+      'path': `/ide/status?link=${req.body.link}`,
+      'headers': {
+        'content-Type': 'application/json',
+        'Authorization': `Bearer ${temp_results.access_token}`
+      }
+    };
+
+    const request = https.request(options, (response) => {
+      let data = '';
+      response.on('data', (chunk) => {
+        data += chunk;
+      });
+
+      response.on('end', () => {
+        if(response.statusCode === 401) {
+          console.log('unauthorized');
+          delete req.session.username;
+          res.redirect('/');
+          return;
+        }
+        res.send(data);
+      });
+    });
+    request.end();
+  } catch(err) {
+    console.log(err);
+  }
+});
+
 app.use(fileUpload());
 app.post('/codeUpload', async (req, res) => {
   if (!req.files)
@@ -351,8 +405,8 @@ app.post('/codeUpload', async (req, res) => {
         res.redirect('/');
         return;
       }
-      console.log(data);
-      console.log(problemName);
+      // console.log(username, data, problemName);
+      updateLinks(username, data, problemName);
       res.redirect('/testGenerate');
     });
   });
@@ -365,6 +419,39 @@ app.listen(5000, () => {
 });
 
 //functions :)
+
+const updateLinks = async (username, data, problemName) => {
+  const link = await JSON.parse(data).result.data.link;
+  try {
+    const result = await mongoUtilities.ProblemLinks.extractLinks({ "username": username });
+    if(!result) {
+      let linksList = [];
+      linksList.push({
+        "problemName": problemName,
+        "problemLink": link
+      });
+      mongoUtilities.ProblemLinks.insertLinks({
+        "username": username,
+        "listOfLinks": JSON.stringify(linksList)
+      });
+    } else {
+      let linksList = JSON.parse(result.listOfLinks);
+      linksList.push({
+        "problemName": problemName,
+        "problemLink": link
+      });
+      mongoUtilities.ProblemLinks.updateLinks({
+        "username": username
+      }, {
+        $set: {
+          "listOfLinks": JSON.stringify(linksList)
+        }
+      });
+    }
+  } catch(err) {
+    console.log(err);
+  }
+};
 
 const markQuestionBackend = (username, tags, problemcode) => {
   mongoUtilities.UserTaggingStatus.extractQuestions({ "username": username })

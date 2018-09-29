@@ -6,7 +6,7 @@ const url = require('../config/credentials.json').Local_URI;
 
 // Database Name
 const dbName = 'question_tagger';
-let db, users, problems, userTaggingStatus;
+let db, users, problems, userTaggingStatus, problemLinks;
 
 // Use connect method to connect to the server
 MongoClient.connect(url, { useNewUrlParser: true }, function(err, client) {
@@ -15,11 +15,38 @@ MongoClient.connect(url, { useNewUrlParser: true }, function(err, client) {
   users = db.collection('users');
   problems = db.collection('problems');
   userTaggingStatus = db.collection('userTaggingStatus');
+  problemLinks = db.collection('problemLinks');
   console.log("Connected successfully to mongodb instance");
 });
 
 const Problems = {
   //todo: complete
+};
+
+const ProblemLinks = {
+  extractLinks: (query) => {
+    return new Promise((res, rej) => {
+      problemLinks.findOne(query, (err, data) => {
+        if(err) rej(err);
+        res(data);
+      })
+    });
+  },
+  insertLinks: (query) => {
+    return new Promise(function(res, rej) {
+      problemLinks.insertOne(query, (err, data) => {
+        if(err) rej(err);
+        res(data);
+      })
+    });
+  },
+  updateLinks: (query, update) => {
+    return new Promise(async function(res, rej) {
+      const result = await problemLinks.updateOne(query, update);
+      if(!result) rej('links updation failed');
+      res('links updated')
+    });
+  }
 };
 
 const UserTaggingStatus = {
@@ -74,4 +101,4 @@ const Users = {
   }
 };
 
-module.exports = { Users, Problems, UserTaggingStatus };
+module.exports = { Users, Problems, UserTaggingStatus, ProblemLinks};

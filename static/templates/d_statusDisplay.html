@@ -17,7 +17,7 @@
   <link href="../dashboard_assets/css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="../dashboard_assets/demo/demo.css" rel="stylesheet" />
-  <link href="../dashboard_assets/css/analyseTopics.css" rel="stylesheet" />
+  <link href="../dashboard_assets/css/custom_statusDisplay.css" rel="stylesheet" />
 </head>
 
 <body class="dark-edition">
@@ -35,7 +35,7 @@
       </div>
       <div class="sidebar-wrapper">
         <ul class="nav">
-          <li class="nav-item active  ">
+          <li class="nav-item">
             <a class="nav-link" href="/dashboard">
               <i class="material-icons">dashboard</i>
               <p>Dashboard</p>
@@ -65,7 +65,7 @@
               <p>Start Test</p>
             </a>
           </li>
-          <li class="nav-item ">
+          <li class="nav-item active">
             <a class="nav-link" href="/checkStatus">
               <i class="material-icons">assessment</i>
               <p>Submission Status</p>
@@ -157,154 +157,16 @@
         <div class="container-fluid">
           <div class="card">
             <div class="card-header card-header-primary">
-              <h4 class="card-title">Analyse Topics</h4>
-              <p class="card-category">Search the questions solved by you on the basis of the topic name and
-                also gather a statistical analysis of your Pros and Cons
-              </p>
+              <h4 class="card-title"></h4>
+              <p class="card-category">Check Your Submission Status</p>
             </div>
             <div class="card-body">
               <div id="typography">
-                <!-- <div class="card-title">
-                  <h2>Enter Topic</h2>
-                </div> -->
-                <br>
-                <!-- <div class="input-group mb-3">
-                  <input id="tagToSearch" type="text" class="form-control" placeholder="Tag Name" aria-label="Tag Name" aria-describedby="basic-addon2">
-                  <div class="input-group-append">
-                    <button class="input-group-text btn btn-success" id="tagSearchBtn">search</button>
-                  </div>
-                </div> -->
-                <div class="form-group">
-                  <label for="tagToSearch">Choose your tag</label>
-                  <select class="form-control" id="tagToSearch">
-                    <option value="NA">None Selected</option>
-                    <option value="Mathematics">Mathematics</option>
-                    <option value="Pigeonhole">Pigeonhole</option>
-                    <option value="Probability">Probability</option>
-                    <option value="Matrix exponentiation">Matrix exponentiation</option>
-                    <option value="Inclusion-Exclusion">Inclusion-Exclusion</option>
-                    <option value="Number Theory">Number Theory</option>
-                    <option value="LCM">LCM</option>
-                    <option value="GCD">GCD</option>
-                    <option value="Prime factorization">Prime factorization</option>
-                    <option value="Totient">Totient</option>
-                    <option value="Sieves">Sieves</option>
-                    <option value="Mathematical Theorems">Mathematical Theorems</option>
-                    <option value="Chinese Remainder Theorem">Chinese Remainder Theorem</option>
-                    <option value="Euclid's method">Euclid’s method</option>
-                    <option value="Linear Diophantine Equations">Linear Diophantine Equations</option>
-                    <option value="Divide and Conquer">Divide and Conquer</option>
-                    <option value="Binary search applications">Binary search applications</option>
-                    <option value="Recursion and Backtracking">Recursion and Backtracking</option>
-                    <option value="Backtracking using Bitmasks">Backtracking using Bitmasks</option>
-                    <option value="Dynamic Programming">Dynamic Programming</option>
-                    <option value="Linear recurrences">Linear recurrences</option>
-                    <option value="2-D and 3-D DP">2-D and 3-D DP</option>
-                    <option value="DP using Bitmasks">DP using Bitmasks</option>
-                    <option value="Greedy Algorithms">Greedy Algorithms</option>
-                    <option value="Segment trees">Segment trees</option>
-                    <option value="Lazy propagation">Lazy propagation</option>
-                    <option value="Fenwick tree">Fenwick tree</option>
-                    <option value="Binary Indexed Tree">Binary Indexed Tree</option>
-                    <option value="Graphs">Graphs</option>
-                    <option value="Traversals">Traversals</option>
-                    <option value="Min spanning trees">Min spanning trees</option>
-                    <option value="Topological sorting">Topological sorting</option>
-                    <option value="Bipartite graphs">Bipartite graphs</option>
-                    <option value="Cycle detection">Cycle detection</option>
-                    <option value="Union-find">Union-find</option>
-                    <option value="Game Theory">Game Theory</option>
-                    <option value="MO’s Algorithm">MO’s Algorithm</option>
-                  </select>
-                  <div class="input-group-append">
-                    <button class="input-group-text btn btn-success" id="tagSearchBtn">search</button>
-                  </div>
+                <div class="card-title">
+                  <h2>Status Of Submissions</h2>
                 </div>
-                <label class="alert alert-warning" id="waitMessage">Please Wait, Fetching Your List Of Questions ...</label>
                 <div id="listDisplay" class="qDisplay row">
                 </div>
-                <!-- <div class="row">
-                  <div class="tim-typo">
-                    <h1>
-                      <span class="tim-note">Header 1</span>The Life of Material Dashboard </h1>
-                  </div>
-                  <div class="tim-typo">
-                    <h2>
-                      <span class="tim-note">Header 2</span>The Life of Material Dashboard</h2>
-                  </div>
-                  <div class="tim-typo">
-                    <h3>
-                      <span class="tim-note">Header 3</span>The Life of Material Dashboard</h3>
-                  </div>
-                  <div class="tim-typo">
-                    <h4>
-                      <span class="tim-note">Header 4</span>The Life of Material Dashboard</h4>
-                  </div>
-                  <div class="tim-typo">
-                    <h5>
-                      <span class="tim-note">Header 5</span>The Life of Material Dashboard</h5>
-                  </div>
-                  <div class="tim-typo">
-                    <h6>
-                      <span class="tim-note">Header 6</span>The Life of Material Dashboard</h6>
-                  </div>
-                  <div class="tim-typo">
-                    <p>
-                      <span class="tim-note">Paragraph</span>
-                      I will be the leader of a company that ends up being worth billions of dollars, because I got the answers. I understand culture. I am the nucleus. I think that’s a responsibility that I have, to push possibilities, to show people, this is the level that things could be at.</p>
-                  </div>
-                  <div class="tim-typo">
-                    <span class="tim-note">Quote</span>
-                    <blockquote class="blockquote">
-                      <p>
-                        I will be the leader of a company that ends up being worth billions of dollars, because I got the answers. I understand culture. I am the nucleus. I think that’s a responsibility that I have, to push possibilities, to show people, this is the level that things could be at.
-                      </p>
-                      <small>
-                        Kanye West, Musician
-                      </small>
-                    </blockquote>
-                  </div>
-                  <div class="tim-typo">
-                    <span class="tim-note">Muted Text</span>
-                    <p class="text-muted">
-                      I will be the leader of a company that ends up being worth billions of dollars, because I got the answers...
-                    </p>
-                  </div>
-                  <div class="tim-typo">
-                    <span class="tim-note">Primary Text</span>
-                    <p class="text-primary">
-                      I will be the leader of a company that ends up being worth billions of dollars, because I got the answers... </p>
-                  </div>
-                  <div class="tim-typo">
-                    <span class="tim-note">Info Text</span>
-                    <p class="text-info">
-                      I will be the leader of a company that ends up being worth billions of dollars, because I got the answers... </p>
-                  </div>
-                  <div class="tim-typo">
-                    <span class="tim-note">Success Text</span>
-                    <p class="text-success">
-                      I will be the leader of a company that ends up being worth billions of dollars, because I got the answers... </p>
-                  </div>
-                  <div class="tim-typo">
-                    <span class="tim-note">Warning Text</span>
-                    <p class="text-warning">
-                      I will be the leader of a company that ends up being worth billions of dollars, because I got the answers...
-                    </p>
-                  </div>
-                  <div class="tim-typo">
-                    <span class="tim-note">Danger Text</span>
-                    <p class="text-danger">
-                      I will be the leader of a company that ends up being worth billions of dollars, because I got the answers... </p>
-                  </div>
-                  <div class="tim-typo">
-                    <h2>
-                      <span class="tim-note">Small Tag</span>
-                      Header with small subtitle
-                      <br>
-                      <small>Use "small" tag for the headers</small>
-                    </h2>
-                  </div>
-                </div> -->
               </div>
             </div>
           </div>
@@ -596,7 +458,7 @@
       });
     });
   </script>
-  <script src="../dashboard_assets/js/analyseTopics.js"></script>
+  <script src="../dashboard_assets/js/custom_statusDisplay.js"></script>
 </body>
 
 </html>
