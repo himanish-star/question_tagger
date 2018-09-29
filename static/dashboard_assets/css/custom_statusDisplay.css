@@ -25,6 +25,11 @@
   padding: 16px;
   text-align: left;
   background-color: #f1f1f1;
+  color: black;
+}
+
+.dark-edition .card .card-body {
+  color: black;
 }
 
 /* Responsive columns - one column layout (vertical) on small screens */
