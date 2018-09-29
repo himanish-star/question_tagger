@@ -1,22 +1,9 @@
 window.onload = () => {
   const fetchSomeBtn = $('#fetchSomeBtn');
   const updateBtn = $('#updateBtn');
-  const mainPanel = $('#mainPanel');
-  const sidebarCollapsible = $('#sidebarCollapsible');
-  const sidebarCollapsibleIcon = $('#sidebarCollapsibleIcon');
   const listOfUnmarkedQuestions = $('#listOfUnmarkedQuestions');
   const userQuestionsList = localStorage.getItem('userQuestionsList');
-
-  sidebarCollapsibleIcon[0].onclick = (e) => {
-    e.preventDefault();
-    if(sidebarCollapsible[0].style.display !== 'none') {
-      sidebarCollapsible.hide();
-      mainPanel[0].style.width = 'calc(100%)';
-    } else {
-      sidebarCollapsible.show();
-      mainPanel[0].style.width = 'calc(100% - 260px)';
-    }
-  }
+  const usernameDisplay = $('#usernameDisplay');
 
   fetchSomeBtn[0].onclick = (e) => {
     e.preventDefault();
@@ -29,6 +16,7 @@ window.onload = () => {
     updateList();
   };
 
+  usernameDisplay.text(JSON.parse(localStorage.getItem('user_data')).username);
 
   const updateList = () => {
     $.get('/updateUserQuestionsTable', (msg) => {
@@ -155,7 +143,7 @@ window.onload = () => {
   if(userQuestionsList && userQuestionsList.length) {
     fetchList(userQuestionsList);
   } else {
-    window.alert("No list of questions available, please fetch your questions")
+    window.alert("No list of questions available, please fetch your questions, available at inside the sync button");
   }
   //fetchList();
 }
