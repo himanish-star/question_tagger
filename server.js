@@ -172,6 +172,47 @@ app.post('/markQuestion', (req, res) => {
   res.send('marked questions in the backend');
 });
 
+app.post('/unmarkQuestion', (req, res) => {
+  const problemcode = req.body.problemCode;
+  const username = req.session.username;
+
+  mongoUtilities.UserTaggingStatus.extractQuestions({ "username": username })
+    .then(data => {
+      let found = false;
+      let questionsList = JSON.parse(data.questionsList);
+      let newQuestionsList = [];
+      for(let question of questionsList) {
+        if(question.problemcode === problemcode) {
+          question.tagged = false;
+          delete question.tags;
+          found = true;
+        }
+        newQuestionsList.push(question);
+      }
+      if(found) {
+        mongoUtilities.UserTaggingStatus.updateQuestions({
+          "username": username
+        }, {
+          $set: {
+            "questionsList": JSON.stringify(newQuestionsList)
+          }
+        })
+          .then((data) => {
+            console.log('question unmarked successfully');
+            res.send('success');
+          })
+          .catch((err) => {
+            console.log(err);
+            res.send(err);
+          });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send(err);
+    });
+});
+
 app.get('/fetchUserQuestionsTable', (req, res) => {
   const username = req.session.username;
   mongoUtilities.UserTaggingStatus.extractQuestions({ "username": username })
@@ -210,6 +251,7 @@ app.get('/updateUserQuestionsTable', async (req, res) => {
         return;
       }
       const list = await extractListOfQuestions(data.result.data.content.problemStats);
+      //problem above: todo: debug
       readUserQuestionListFromDatabase(list, username);
       res.send('updation done');
     });
@@ -266,6 +308,7 @@ app.get('/redirect', (req, res) => {
       data += chunk;
     });
     response.on('end', async () => {
+      console.log(data);
       data = JSON.parse(data);
       const userDetails = await getUserName(data.result.data.access_token);
 
@@ -327,6 +370,11 @@ app.get('/fetchAllLinksOfSubmittedProblems', async (req, res) => {
 
 app.get('/checkStatus', (req, res) => {
   res.sendFile(__dirname + '/static/templates/d_statusDisplay.html');
+});
+
+
+app.post('/deleteLinkOfProblem', (req, res) => {
+  
 });
 
 app.post('/statusOfProblem', async (req, res) => {

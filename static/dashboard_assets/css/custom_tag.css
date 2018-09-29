@@ -18,6 +18,10 @@ ul.multiselect-container {
   font-weight: bold;
 }
 
+#fetchSomeBtn {
+  display: none;
+}
+
 #waitMessage {
   color: white;
   font-weight: bold;
@@ -34,4 +38,34 @@ ul.multiselect-container {
   color: white;
   font-weight: bold;
   display: none;
+}
+
+.ms-elem-selectable {
+  color: black;
+}
+
+.ms-selected {
+  color: red;
+}
+
+.ms-selectable {
+  width: 50%;
+}
+
+.ms-selection {
+  width: 50%;
+}
+
+.modal-title {
+  color: black;
+}
+
+.ms-elem-selectable:hover {
+  cursor: pointer;
+  background-color: yellow;
+}
+
+.ms-elem-selection:hover {
+  cursor: pointer;
+  background-color: yellow;
 }

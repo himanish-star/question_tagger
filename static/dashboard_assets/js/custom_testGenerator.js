@@ -5,8 +5,15 @@ window.onload = () => {
   const stage1 = $('#stage1');
   const stage2 = $('#stage2');
   const stage3 = $('#stage3');
+  const testStopBtn = $('#testStopBtn');
   const phase2NextBtn = $('#phase2Next');
   const listDisplayRow = $('#listDisplay');
+
+  testStopBtn[0].onclick = (e) => {
+    e.preventDefault();
+    stage3.hide();
+    stage1.show();
+  };
 
   phase1NextBtn[0].onclick = (e) => {
     e.preventDefault();
@@ -49,6 +56,7 @@ window.onload = () => {
     });
 
     const cumulativeData = await Promise.all(questionsFittedToTemplates);
+    stage3.show();
     cumulativeData.forEach((data, index) => {
       data = JSON.parse(data).result.data.content;
       const { body, problemName } = data;

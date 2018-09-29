@@ -2,6 +2,10 @@
   display: none;
 }
 
+#stage3 {
+  display: none;
+}
+
 .testQuestionOptions option {
   color: black;
 }

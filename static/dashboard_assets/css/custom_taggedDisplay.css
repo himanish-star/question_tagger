@@ -1,6 +1,6 @@
 .dark-edition .table>thead>tr>th {
   font-weight: bold;
-  color: yellow;
+  color: pink;
 }
 
 body {
@@ -9,5 +9,5 @@ body {
 
 .dark-edition .table>tbody>tr>td {
   font-weight: bold;
-  color: orange;
+  color: white;
 }
