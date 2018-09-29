@@ -17,19 +17,20 @@
   <link href="../dashboard_assets/css/material-dashboard.css?v=2.1.0" rel="stylesheet" />
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="../dashboard_assets/demo/demo.css" rel="stylesheet" />
+  <link href="../dashboard_assets/css/custom_dashboard.css" rel="stylesheet" />
 </head>
 
 <body class="dark-edition">
   <div class="wrapper ">
-    <div class="sidebar" data-color="purple" data-background-color="black" data-image="../assets/img/sidebar-2.jpg">
+    <div id="sidebarCollapsible" class="sidebar" data-color="purple" data-background-color="black" data-image="../dashboard_assets/img/sidebar-2.jpg">
       <!--
         Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
 
         Tip 2: you can also add an image using data-image tag
     -->
       <div class="logo">
-        <a href="http://www.creative-tim.com" class="simple-text logo-normal">
-          Creative Tim
+        <a href="/dashboard" class="simple-text logo-normal">
+          Question Tagger
         </a>
       </div>
       <div class="sidebar-wrapper">
@@ -91,7 +92,7 @@
         </ul>
       </div>
     </div>
-    <div class="main-panel">
+    <div id="mainPanel" class="main-panel">
       <!-- Navbar -->
       <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top " id="navigation-example">
         <div class="container-fluid">
@@ -105,25 +106,25 @@
             <span class="navbar-toggler-icon icon-bar"></span>
           </button>
           <div class="collapse navbar-collapse justify-content-end">
-            <form class="navbar-form">
+            <!-- <form class="navbar-form">
               <div class="input-group no-border">
                 <input type="text" value="" class="form-control" placeholder="Search...">
                 <button type="submit" class="btn btn-default btn-round btn-just-icon">
                   <i class="material-icons">search</i>
                   <div class="ripple-container"></div>
                 </button>
-              </div>
+              </div> -->
             </form>
             <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="javascript:void(0)">
-                  <i class="material-icons">dashboard</i>
+              <!-- <li id="sidebarCollapsibleIcon" class="nav-item">
+                <a class="nav-link" title="toggle side menu" href="javascript:void(0)">
+                  <i class="material-icons">menu</i>
                   <p class="d-lg-none d-md-block">
-                    Stats
+                    toggle menu
                   </p>
                 </a>
-              </li>
-              <li class="nav-item dropdown">
+              </li> -->
+              <!-- <li class="nav-item dropdown">
                 <a class="nav-link" href="javscript:void(0)" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="material-icons">notifications</i>
                   <span class="notification">5</span>
@@ -138,12 +139,12 @@
                   <a class="dropdown-item" href="javascript:void(0)">Another Notification</a>
                   <a class="dropdown-item" href="javascript:void(0)">Another One</a>
                 </div>
-              </li>
-              <li class="nav-item">
+              </li> -->
+              <li id="logoutIcon" class="nav-item">
                 <a class="nav-link" href="javascript:void(0)">
-                  <i class="material-icons">person</i>
+                  <i class="material-icons">logout</i>
                   <p class="d-lg-none d-md-block">
-                    Account
+                    Logout
                   </p>
                 </a>
               </li>
@@ -154,7 +155,129 @@
       <!-- End Navbar -->
       <div class="content">
         <div class="container-fluid">
-          <div class="row">
+          <div class="qDisplay row">
+            <div class="column">
+              <div class="question card">
+                <h5 class="card-header">Instructions On Usage</h5>
+                <div class="card-body">
+                  Given below are the instructions to operate this app!
+                  <br>
+                  <span class="custom_highlight">Note:</span> Sessions last for 1hr only. However, all your details will
+                  be saved and restored in subsequent logins. The session duration will be
+                  increased in the next release.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="qDisplay row">
+            <div class="column">
+              <div class="question card">
+                <h5 class="card-header"><i class="material-icons">local_offer</i> Tag Questions</h5>
+                <div class="card-body">
+                  <p>
+                    1. Update your list of questions by
+                    clicking on the <span class="custom_highlight">sync button</span> at the top right corner.
+                    This need not be done always. <span class="custom_highlight">Update your questions only when
+                    you solve some new problems on code chef</span>, so that your list of questions with
+                    the app stay up-to-date. In the next release this feature would be automatic.
+                  </p>
+                  <p>
+                    2. Fetching of list from the backend of the app is <span class="custom_highlight">automatic</span>. However, if you require,
+                    a <span class="custom_highlight">manual fetch</span> then you can use the fetch feature available inside the sync button.
+                  </p>
+                  <p>
+                    3. Then select one or more tags for questions and click on the mark button to mark them.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="qDisplay row">
+            <div class="column">
+              <div class="question card">
+                <h5 class="card-header"><i class="material-icons">content_paste</i> Tagged Questions</h5>
+                <div class="card-body">
+                  <p>
+                    1. You can view the list of questions along with their respective topic tags.
+                  </p>
+                  <p>
+                    2. If you want to <span class="custom_highlight">change/remove</span> the tags for a question. Then click on remove tags
+                    to remove them and later you can
+                    re-tag them from the <span class="custom_highlight">tag question section</span>.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="qDisplay row">
+            <div class="column">
+              <div class="question card">
+                <h5 class="card-header">
+                  <i class="material-icons">library_books</i> Analyse Topics
+                </h5>
+                <div class="card-body">
+                  <p>
+                    1. Select the topic tag for which you want to analyse questions and
+                    click the search button. This will fetch all questions which have the tag
+                    that is being searched for.
+                  </p>
+                  <p>
+                    2. You can click on <span class="custom_highlight">view</span> to view the
+                    question on <span class="custom_highlight">codechef</span>.
+                  </p>
+                  <p>
+                    3. Click on the <span class="custom_highlight">add button</span> to
+                    add the question to the list of questions that you want to try
+                    out later for improvement in <span class="custom_highlight">Start Test</span>
+                    section.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="qDisplay row">
+            <div class="column">
+              <div class="question card">
+                <h5 class="card-header"><i class="material-icons">code</i> Start Test</h5>
+                <div class="card-body">
+                  <p>
+                    1. Select the number of questions you want to practice and
+                    then click on <span class="custom_highlight">next</span>.
+                    Then select questions and click
+                    on <span class="custom_highlight">start test</span>.
+                  </p>
+                  <p>
+                    2. Then solve questions and upload your code.
+                    Please also provide custom inputs and select your language
+                    of submission. Then click on <span>submit</span>.
+                    You can view the status of your submitted code under the
+                    <span class="custom_highlight">Submission Status</span> section.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="qDisplay row">
+            <div class="column">
+              <div class="question card">
+                <h5 class="card-header"><i class="material-icons">assessment</i> Submission Status</h5>
+                <div class="card-body">
+                  <p>
+                    1. You can directly view the submission status of the questions submitted by you.
+                  </p>
+                  <p>
+                    2. <span class="custom_highlight">Can't find the submission status of the question you submitted?</span>
+                    <br>
+                    That is because the status of you submission is availabe at the ide of codechef only
+                    for a small amount of time.
+                    <br>
+                    Not to worry! Just make another submission and come back here :)
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div class="row">
             <div class="col-xl-4 col-lg-12">
               <div class="card card-chart">
                 <div class="card-header card-header-success">
@@ -564,13 +687,13 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
       <footer class="footer">
         <div class="container-fluid">
           <nav class="float-left">
-            <ul>
+            <!-- <ul>
               <li>
                 <a href="https://www.creative-tim.com">
                   Creative Tim
@@ -591,11 +714,11 @@
                   Licenses
                 </a>
               </li>
-            </ul>
+            </ul> -->
           </nav>
           <div class="copyright float-right" id="date">
             , made with <i class="material-icons">favorite</i> by
-            <a href="https://www.creative-tim.com" target="_blank">Creative Tim</a> for a better web.
+            <a href="https://himanish-star.github.io" target="_blank">Soumya Mohapatra</a> for codechef-api-hackathon.
           </div>
         </div>
       </footer>
@@ -606,7 +729,7 @@
       </script>
     </div>
   </div>
-  <div class="fixed-plugin">
+  <!-- <div class="fixed-plugin">
     <div class="dropdown show-dropdown">
       <a href="#" data-toggle="dropdown">
         <i class="fa fa-cog fa-2x"> </i>
@@ -654,7 +777,7 @@
                 <a href="https://www.creative-tim.com/product/material-dashboard-pro" target="_blank" class="btn btn-warning btn-block">
                   Get the pro version
                 </a>
-            </li> -->
+            </li>
         <li class="button-container">
           <a href="https://demos.creative-tim.com/material-dashboard-dark/docs/2.0/getting-started/introduction.html" target="_blank" class="btn btn-default btn-block">
             View Documentation
@@ -672,7 +795,7 @@
         </li>
       </ul>
     </div>
-  </div>
+  </div> --> -->
   <!--   Core JS Files   -->
   <script src="../dashboard_assets/js/core/jquery.min.js"></script>
   <script src="../dashboard_assets/js/core/popper.min.js"></script>

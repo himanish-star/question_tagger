@@ -226,7 +226,8 @@ app.get('/loginUser', (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-  //todo: implement this part
+  delete req.session.username;
+  res.redirect('/loginUser');
 });
 
 app.get('/userDetails', (req, res) => {
