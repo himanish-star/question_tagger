@@ -3,6 +3,16 @@ window.onload = () => {
   const tagSearchBtn = $('#tagSearchBtn');
   const waitMessage = $('#waitMessage');
   const listDisplayRow = $('#listDisplay');
+  const usernameDisplay = $('#usernameDisplay');
+  const logoutIcon = $('#logoutIcon');
+  const replacer = $('#replacer');
+
+  usernameDisplay.text(JSON.parse(localStorage.getItem('user_data')).username);
+
+  logoutIcon[0].onclick = (e) => {
+    e.preventDefault();
+    window.location.href = '/logout';
+  };
 
   tagSearchBtn[0].onclick = (e) => {
     e.preventDefault();
@@ -16,23 +26,27 @@ window.onload = () => {
       "tagName": tag
     },
     (data) => {
-      fetchAndDisplayDetails(data);
+      fetchAndDisplayDetails(tag, data);
       tagToSearch.val("");
     });
   };
 
-  const fetchAndDisplayDetails = async (problemCodes) => {
+  const fetchAndDisplayDetails = async (tag, problemCodes) => {
     const promiseArray = problemCodes.map(async problemCode => {
       const text = await fetchProblemStatus(problemCode);
       return JSON.parse(text);
     });
     const completeData = await Promise.all(promiseArray);
     localStorage.setItem('analysedTopic', JSON.stringify(completeData));
+    localStorage.setItem('analysedTopicName', tag);
     displayDetails(completeData);
   };
 
   const displayDetails = async (dataList) => {
     console.log(dataList);
+    if(dataList.length === 0 ) {
+      alert('There are no problems tagged as: ' + localStorage.getItem('analysedTopicName'));
+    }
     listDisplayRow.html('');
     const promiseList = dataList.map(async (data, i) => {
       const { AC, WA, RE, CTE, TLE, others, contest, problem} = await dataManipulate(data);
@@ -87,6 +101,9 @@ window.onload = () => {
     });
     await Promise.all(promiseList);
 
+    if(localStorage.getItem('analysedTopicName')) {
+      replacer.text(localStorage.getItem('analysedTopicName'));
+    }
     $('.addForImprovement').each((index, elem) => {
       elem.onclick = (e) => {
         e.preventDefault();
