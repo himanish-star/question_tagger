@@ -435,8 +435,7 @@ app.post('/statusOfProblem', async (req, res) => {
 
       response.on('end', () => {
         try {
-          if(!JSON.parse(data).result.data[0] || JSON.parse(data).result.data[0] === "link")
-            throw "status of problem evaporated :haha:";
+          console.log('checky',data);
           res.send(data);
         } catch(err) {
           console.log('430 session expired', err);
@@ -492,7 +491,7 @@ app.post('/codeUpload', async (req, res) => {
         // console.log(username, data, problemName);
         try {
           await updateLinks(username, data, problemName);
-          res.redirect('/checkStatus');
+          res.redirect('/testGenerate');
         } catch(err) {
           console.log('489 session expired', err);
           delete req.session.username;
