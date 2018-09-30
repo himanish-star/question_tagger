@@ -145,13 +145,20 @@ app.post('/problemDetails', async (req, res) => {
       response.on('data', (chunk) => {
         data += chunk;
       });
-      response.on('end', () => {
-        res.send(data);
+      response.on('end', async () => {
+        try {
+          await JSON.parse(data).result.data.content;
+          res.send(data);
+        } catch(err) {
+          console.log('153 session expired', err);
+          delete req.session.username;
+          res.send('session expired');
+        }
       });
     });
     request.end();
   } catch(err) {
-    console.log('165 session expired', err);
+    console.log('161 session expired', err);
     delete req.session.username;
     res.send('session expired');
   }
@@ -235,9 +242,15 @@ app.get('/updateUserQuestionsTable', async (req, res) => {
       });
       response.on('end', async () => {
         data = JSON.parse(data);
-        const list = await extractListOfQuestions(data.result.data.content.problemStats);
-        readUserQuestionListFromDatabase(list, username);
-        res.send('updation done');
+        try {
+          const list = await extractListOfQuestions(data.result.data.content.problemStats);
+          readUserQuestionListFromDatabase(list, username);
+          res.send('updation done');
+        } catch(err) {
+          console.log('243 session expired', err);
+          delete req.session.username;
+          res.send('session expired');
+        }
       });
     })
     request.end();

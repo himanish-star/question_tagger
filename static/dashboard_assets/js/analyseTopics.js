@@ -168,8 +168,8 @@ window.onload = () => {
       },
       (data) => {
         if(data === 'session expired') {
+          window.location.href = '/';
           alert('session expired, please login again');
-          window.location.href = '/login';
         }
         resolve(data);
       });
