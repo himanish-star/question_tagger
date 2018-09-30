@@ -65,6 +65,8 @@ window.onload = () => {
         "contestCode": testcode.split('/')[0]
       }, (data) => {
         if(data === 'session expired') {
+          localStorage.removeItem('cumulativeData');
+          localStorage.removeItem('testProgress');
           alert('session expired, please login again');
           window.location.href = '/';
         }

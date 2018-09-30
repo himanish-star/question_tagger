@@ -62,7 +62,7 @@ window.onload = () => {
       }, (data) =>{
         if(data === 'session expired') {
           alert('session expired, please login again');
-          window.location.href = '/login';
+          window.location.href = '/';
         }
         resolve(data);
       })
