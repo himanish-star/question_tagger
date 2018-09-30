@@ -2,7 +2,7 @@ const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 
 // Connection URL
-const url = require('../config/credentials.json').Local_URI;
+const url = require('../config/credentials.json').Database_URI;
 
 // Database Name
 const dbName = 'question_tagger';

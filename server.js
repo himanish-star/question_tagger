@@ -485,7 +485,7 @@ app.post('/codeUpload', async (req, res) => {
   request.end();
 });
 
-app.listen(5000, () => {
+app.listen(5000, credentials.private_ip, () => {
   console.log("your server has started and the website can be viewed at http://shmdeveloper.com");
 });
 
