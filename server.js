@@ -433,12 +433,12 @@ app.post('/statusOfProblem', async (req, res) => {
         data += chunk;
       });
 
-      response.on('end', () => {
+      response.on('end', async () => {
         try {
-          console.log('checky',data);
+          await JSON.parse(data).result.data.langName;
           res.send(data);
         } catch(err) {
-          console.log('430 session expired', err);
+          console.log('441 session expired', err);
           delete req.session.username;
           res.send('session expired');
         }
