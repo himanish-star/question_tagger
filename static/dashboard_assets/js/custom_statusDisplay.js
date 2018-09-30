@@ -5,7 +5,7 @@ window.onload = () => {
 
   logoutIcon[0].onclick = (e) => {
     e.preventDefault();
-    window.location.reload();
+    window.location.href = '/logout';
   };
 
   usernameDisplay.text(JSON.parse(localStorage.getItem('user_data')).username);
