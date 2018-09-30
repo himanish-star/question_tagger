@@ -65,7 +65,6 @@ window.onload = () => {
         "contestCode": testcode.split('/')[0]
       }, (data) => {
         if(data === 'session expired') {
-          localStorage.setItem('cumulativeDataUseless', "true");
           alert('session expired, please login again');
           window.location.href = '/';
         }
@@ -154,12 +153,14 @@ window.onload = () => {
     }
   };
 
-  if(localStorage.getItem('cumulativeDataUseless') !== "true" &&
-  localStorage.getItem('cumulativeData') &&
-  localStorage.getItem('testProgress') === 'true') {
+  if(localStorage.getItem('cumulativeData') === ["session expired"]) {
+    localStorage.removeItem('cumulativeData');
+    localStorage.removeItem('testProgress');
+  }
+
+  if(localStorage.getItem('cumulativeData') && localStorage.getItem('testProgress') === 'true') {
     stage1.hide();
     stage2.hide();
-    localStorage.removeItem('cumulativeData')
     tempDisplay(JSON.parse(localStorage.getItem('cumulativeData')));
   }
 };
