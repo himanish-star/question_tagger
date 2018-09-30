@@ -434,7 +434,15 @@ app.post('/statusOfProblem', async (req, res) => {
       });
 
       response.on('end', () => {
-        res.send(data);
+        try {
+          if(!JSON.parse(data).result.data[0] || JSON.parse(data).result.data[0] === "link")
+            throw "status of problem evaporated :haha:";
+          res.send(data);
+        } catch(err) {
+          console.log('430 session expired', err);
+          delete req.session.username;
+          res.send('session expired');
+        }
       });
     });
     request.end();
