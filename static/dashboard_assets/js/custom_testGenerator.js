@@ -153,7 +153,7 @@ window.onload = () => {
     }
   };
 
-  if(localStorage.getItem('cumulativeData')[0] === "session expired") {
+  if(JSON.parse(localStorage.getItem('cumulativeData'))[0] === "session expired") {
     localStorage.removeItem('cumulativeData');
     localStorage.removeItem('testProgress');
   }
