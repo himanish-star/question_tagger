@@ -2,7 +2,7 @@ const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 
 // Connection URL
-const url = "mongodb://root:codechef@dds-6gjc3e2f8d6889141251-pub.mongodb.ap-south-1.rds.aliyuncs.com:3717,dds-6gjc3e2f8d6889142873-pub.mongodb.ap-south-1.rds.aliyuncs.com:3717/admin?replicaSet=mgset-1050001978";
+const url = require("../config/credentials.json").Database_URI;
 
 // Database Name
 const dbName = 'question_tagger';
@@ -103,4 +103,3 @@ const Users = {
 };
 
 module.exports = { Users, Problems, UserTaggingStatus, ProblemLinks};
-
