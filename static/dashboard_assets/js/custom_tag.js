@@ -20,8 +20,9 @@ window.onload = () => {
 
   const updateList = () => {
     $.get('/updateUserQuestionsTable', (msg) => {
-      if(msg === "auth error") {
-        window.location.href = "/";
+      if(msg === "session expired") {
+        alert('session expired, please login again');
+        window.location.href = "/login";
       }
       $('#updateStartMessage').hide();
       $('#updateEndMessage').show();

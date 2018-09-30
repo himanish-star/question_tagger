@@ -60,6 +60,10 @@ window.onload = () => {
       $.post('/statusOfProblem', {
         "link": link
       }, (data) =>{
+        if(data === 'session expired') {
+          alert('session expired, please login again');
+          window.location.href = '/login';
+        }
         resolve(data);
       })
     });

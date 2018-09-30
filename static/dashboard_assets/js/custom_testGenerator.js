@@ -64,6 +64,10 @@ window.onload = () => {
         "problemCode": testcode.split('/')[1],
         "contestCode": testcode.split('/')[0]
       }, (data) => {
+        if(data === 'session expired') {
+          alert('session expired, please login again');
+          window.location.href = '/login';
+        }
         resolve(data);
       });
     });
@@ -112,7 +116,7 @@ window.onload = () => {
     const testCodes = await JSON.parse(localStorage.getItem('testCode'));
     listDisplayRow.html("");
     const questionsFittedToTemplates = testCodes.map(async testcode => {
-      const data = returnProblemDescription(testcode);
+      const data = await returnProblemDescription(testcode);
       return data;
     });
 

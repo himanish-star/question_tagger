@@ -167,6 +167,10 @@ window.onload = () => {
         "problemcode": problemcode
       },
       (data) => {
+        if(data === 'session expired') {
+          alert('session expired, please login again');
+          window.location.href = '/login';
+        }
         resolve(data);
       });
     });

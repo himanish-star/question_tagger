@@ -113,19 +113,15 @@ app.post('/problemDescription', async (req, res) => {
         data += chunk;
       });
       response.on('end', () => {
-        if(response.statusCode === 401) {
-          console.log("unauthorized");
-          delete req.session.username;
-          res.redirect('/');
-          return;
-        }
         // fs.writeFileSync('temp.json', JSON.stringify(JSON.parse(data), null, '\t'));
         res.send(data);
       });
     });
     request.end();
   } catch(err) {
-
+    console.log('128 session expired', err);
+    delete req.session.username;
+    res.send('session expired');
   }
 });
 
@@ -150,19 +146,14 @@ app.post('/problemDetails', async (req, res) => {
         data += chunk;
       });
       response.on('end', () => {
-        if(response.statusCode === 401) {
-          console.log("access_token has expired");
-          delete req.session.username;
-          res.redirect('/');
-          return;
-        }
         res.send(data);
       });
     });
     request.end();
   } catch(err) {
-    console.log(err);
-    res.redirect('/');
+    console.log('165 session expired', err);
+    delete req.session.username;
+    res.send('session expired');
   }
 });
 
@@ -226,37 +217,35 @@ app.get('/fetchUserQuestionsTable', (req, res) => {
 
 app.get('/updateUserQuestionsTable', async (req, res) => {
   const username = req.session.username;
-  const tempResults = await mongoUtilities.Users.findUser({ "username": username});
-  const options = {
-    "host": "api.codechef.com",
-    "path": `/users/${username}`,
-    "method": "GET",
-    "headers": {
-      "content-Type": "application/json",
-      "Authorization": `Bearer ${tempResults.access_token}`
-    }
-  }
-  const request = https.request(options, response => {
-    let data = '';
-    response.on('data', chunk => {
-      data += chunk;
-    });
-    response.on('end', async () => {
-      data = JSON.parse(data);
-      if(response.statusCode === 401) {
-        console.log("access_token has expired");
-        delete req.session.username;
-        console.log('session expired, implement the code to work for #refresh_token');
-        res.redirect('/');
-        return;
+  try {
+    const tempResults = await mongoUtilities.Users.findUser({ "username": username});
+    const options = {
+      "host": "api.codechef.com",
+      "path": `/users/${username}`,
+      "method": "GET",
+      "headers": {
+        "content-Type": "application/json",
+        "Authorization": `Bearer ${tempResults.access_token}`
       }
-      const list = await extractListOfQuestions(data.result.data.content.problemStats);
-      //problem above: todo: debug
-      readUserQuestionListFromDatabase(list, username);
-      res.send('updation done');
-    });
-  })
-  request.end();
+    }
+    const request = https.request(options, response => {
+      let data = '';
+      response.on('data', chunk => {
+        data += chunk;
+      });
+      response.on('end', async () => {
+        data = JSON.parse(data);
+        const list = await extractListOfQuestions(data.result.data.content.problemStats);
+        readUserQuestionListFromDatabase(list, username);
+        res.send('updation done');
+      });
+    })
+    request.end();
+  } catch(err) {
+    console.log('254 session expired', err);
+    delete req.session.username;
+    res.send('session expired');
+  };
 });
 
 app.get('/dashboard', (req, res) => {
@@ -308,46 +297,51 @@ app.get('/redirect', (req, res) => {
       data += chunk;
     });
     response.on('end', async () => {
-      console.log(data);
       data = JSON.parse(data);
-      const userDetails = await getUserName(data.result.data.access_token);
+      try {
+        const userDetails = await getUserName(data.result.data.access_token);
 
-      mongoUtilities.Users.findUser({ username: userDetails.username })
-        .then((result) => {
-          if(result) {
-            mongoUtilities.Users.updateUser({
-              'username': userDetails.username,
-            }, {
-              $set: {
+        mongoUtilities.Users.findUser({ username: userDetails.username })
+          .then((result) => {
+            if(result) {
+              mongoUtilities.Users.updateUser({
+                'username': userDetails.username,
+              }, {
+                $set: {
+                  'access_token': data.result.data.access_token,
+                  'refresh_token': data.result.data.refresh_token }
+              })
+                .then((msg) => {
+                  console.log(msg);
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+            } else {
+              mongoUtilities.Users.storeUser({
                 'access_token': data.result.data.access_token,
-                'refresh_token': data.result.data.refresh_token }
-            })
-              .then((msg) => {
-                console.log(msg);
+                'username': userDetails.username,
+                'fullname': userDetails.fullname,
+                'refresh_token': data.result.data.refresh_token
               })
-              .catch((err) => {
-                console.error(err);
-              });
-          } else {
-            mongoUtilities.Users.storeUser({
-              'access_token': data.result.data.access_token,
-              'username': userDetails.username,
-              'fullname': userDetails.fullname,
-              'refresh_token': data.result.data.refresh_token
-            })
-              .then((msg) => {
-                console.log(msg);
-              })
-              .catch((err) => {
-                console.error(err);
-              });
-          }
-        })
-        .catch(err => {
-          console.error(err);
-        });
-      req.session.username = userDetails.username;
-      res.redirect('/dashboard');
+                .then((msg) => {
+                  console.log(msg);
+                })
+                .catch((err) => {
+                  console.error(err);
+                });
+            }
+          })
+          .catch(err => {
+            console.error(err);
+          });
+        req.session.username = userDetails.username;
+        res.redirect('/dashboard');
+      } catch(err) {
+        console.log('349 session expired', err);
+        delete req.session.username;
+        res.send('session expired');
+      }
     })
   });
   request.write(JSON.stringify(post_body));
@@ -420,18 +414,14 @@ app.post('/statusOfProblem', async (req, res) => {
       });
 
       response.on('end', () => {
-        if(response.statusCode === 401) {
-          console.log('unauthorized');
-          delete req.session.username;
-          res.redirect('/');
-          return;
-        }
         res.send(data);
       });
     });
     request.end();
   } catch(err) {
-    console.log(err);
+    console.log('430 session expired', err);
+    delete req.session.username;
+    res.send('session expired');
   }
 });
 
@@ -445,44 +435,44 @@ app.post('/codeUpload', async (req, res) => {
   const inputTestCases = req.body.testCases;
   const languageOfSubmission = req.body.languageChosen;
   const username = req.session.username;
-  const tempResults = await mongoUtilities.Users.findUser({ "username": username});
-  const problemName = req.body.problemName;
+  try {
+    const tempResults = await mongoUtilities.Users.findUser({ "username": username});
+    const problemName = req.body.problemName;
 
-  const options = {
-    'method': 'POST',
-    'host': 'api.codechef.com',
-    'path': '/ide/run',
-    'headers': {
-      'content-Type': 'application/json',
-      'Authorization': `Bearer ${tempResults.access_token}`
-    }
-  };
-
-  const postBody = {
-    "sourceCode": submitCode,
-    "language": languageOfSubmission,
-    "input": inputTestCases
-  };
-
-  const request = https.request(options, (response) => {
-    let data = "";
-    response.on('data', (chunk) => {
-      data += chunk;
-    });
-    response.on('end', () => {
-      if(response.statusCode === 401) {
-        console.log("unauthorized");
-        delete req.session.username;
-        res.redirect('/');
-        return;
+    const options = {
+      'method': 'POST',
+      'host': 'api.codechef.com',
+      'path': '/ide/run',
+      'headers': {
+        'content-Type': 'application/json',
+        'Authorization': `Bearer ${tempResults.access_token}`
       }
-      // console.log(username, data, problemName);
-      updateLinks(username, data, problemName);
-      res.redirect('/testGenerate');
+    };
+
+    const postBody = {
+      "sourceCode": submitCode,
+      "language": languageOfSubmission,
+      "input": inputTestCases
+    };
+
+    const request = https.request(options, (response) => {
+      let data = "";
+      response.on('data', (chunk) => {
+        data += chunk;
+      });
+      response.on('end', () => {
+        // console.log(username, data, problemName);
+        updateLinks(username, data, problemName);
+        res.redirect('/testGenerate');
+      });
     });
-  });
-  request.write(JSON.stringify(postBody));
-  request.end();
+    request.write(JSON.stringify(postBody));
+    request.end();
+  } catch(err) {
+    console.log('485 session expired', err);
+    delete req.session.username;
+    res.redirect('/login');
+  }
 });
 
 app.listen(5000, credentials.private_ip, () => {
@@ -576,11 +566,6 @@ const getUserName = (access_token) => {
       });
       response.on('end', () => {
         data = JSON.parse(data);
-        if(response.statusCode === 401) {
-          console.log('access_token has expired');
-          res.redirect('/');
-          return;
-        }
         resolve({
           username: data.result.data.content.username,
           fullname: data.result.data.content.fullname
