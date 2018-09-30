@@ -65,8 +65,7 @@ window.onload = () => {
         "contestCode": testcode.split('/')[0]
       }, (data) => {
         if(data === 'session expired') {
-          localStorage.removeItem('cumulativeData');
-          localStorage.removeItem('testProgress');
+          localStorage.setItem('cumulativeDataUseless', "true");
           alert('session expired, please login again');
           window.location.href = '/';
         }
@@ -123,7 +122,7 @@ window.onload = () => {
     });
 
     const cumulativeData = await Promise.all(questionsFittedToTemplates);
-    localStorage.setItem('cumulativeData', JSON.stringify(cumulativeData));
+    await localStorage.setItem('cumulativeData', JSON.stringify(cumulativeData));
     tempDisplay(cumulativeData);
   };
 
@@ -155,7 +154,9 @@ window.onload = () => {
     }
   };
 
-  if(localStorage.getItem('cumulativeData') && localStorage.getItem('testProgress') === 'true') {
+  if(localStorage.getItem('cumulativeDataUseless') !== "true" &&
+  localStorage.getItem('cumulativeData') &&
+  localStorage.getItem('testProgress') === 'true') {
     stage1.hide();
     stage2.hide();
     tempDisplay(JSON.parse(localStorage.getItem('cumulativeData')));
