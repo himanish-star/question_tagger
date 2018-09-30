@@ -159,6 +159,7 @@ window.onload = () => {
   localStorage.getItem('testProgress') === 'true') {
     stage1.hide();
     stage2.hide();
+    localStorage.removeItem('cumulativeData')
     tempDisplay(JSON.parse(localStorage.getItem('cumulativeData')));
   }
 };
