@@ -112,9 +112,16 @@ app.post('/problemDescription', async (req, res) => {
       response.on('data', chunk => {
         data += chunk;
       });
-      response.on('end', () => {
+      response.on('end', async () => {
         // fs.writeFileSync('temp.json', JSON.stringify(JSON.parse(data), null, '\t'));
-        res.send(data);
+        try {
+          await JSON.parse(data).result.data.content;
+          res.send(data);
+        } catch(err) {
+          console.log('120 session expired', err);
+          delete req.session.username;
+          res.send('session expired');
+        }
       });
     });
     request.end();
@@ -473,10 +480,16 @@ app.post('/codeUpload', async (req, res) => {
       response.on('data', (chunk) => {
         data += chunk;
       });
-      response.on('end', () => {
+      response.on('end', async () => {
         // console.log(username, data, problemName);
-        updateLinks(username, data, problemName);
-        res.redirect('/testGenerate');
+        try {
+          await updateLinks(username, data, problemName);
+          res.redirect('/checkStatus');
+        } catch(err) {
+          console.log('489 session expired', err);
+          delete req.session.username;
+          res.redirect('/');
+        }
       });
     });
     request.write(JSON.stringify(postBody));
