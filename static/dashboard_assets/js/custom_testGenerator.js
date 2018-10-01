@@ -80,7 +80,6 @@ window.onload = () => {
     cumulativeData.forEach(async (data, index) => {
       data = JSON.parse(data).result.data.content;
       let { body, problemName } = data;
-      body = await marked(body);
       listDisplayRow.append(`
         <div class="column">
           <div class="question card">
@@ -111,6 +110,9 @@ window.onload = () => {
       });
       $(`#markedContent${index}`).html(body);
     });
+    var script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML-full';
+    document.head.appendChild(script);
   };
 
   const startTest = async () => {
