@@ -2,6 +2,19 @@
   display: none;
 }
 
+.hideH3 > h3:first-child {
+  display: none;
+}
+
+.dark-edition .card .card-body .card-title {
+  color: red;
+  font-weight: bold;
+}
+
+.hideH3 > h3 {
+  color: blue;
+}
+
 #stage3 {
   display: none;
 }
@@ -63,3 +76,4 @@ body {
     margin-bottom: 20px;
   }
 }
+
