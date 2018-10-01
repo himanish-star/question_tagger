@@ -117,6 +117,7 @@ window.onload = () => {
           list.push(textTag);
           localStorage.setItem('questionsForImprovement', JSON.stringify(list));
         }
+        alert(textTag + " added for improvement");
       };
     });
     waitMessage.hide();
@@ -193,3 +194,4 @@ window.onload = () => {
   </div>
 </div>
 */
+
