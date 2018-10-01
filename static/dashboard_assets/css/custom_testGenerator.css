@@ -15,9 +15,9 @@
   color: blue;
 }
 
-.hideH3 > br {
+/* .hideH3 > br {
   display: none;
-}
+} */
 
 #stage3 {
   display: none;
@@ -80,5 +80,6 @@ body {
     margin-bottom: 20px;
   }
 }
+
 
 
