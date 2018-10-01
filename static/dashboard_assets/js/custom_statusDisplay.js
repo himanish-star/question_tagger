@@ -25,6 +25,9 @@ window.onload = () => {
   };
 
   const displayStatus = (list) => {
+    if(list.length === 0) {
+      alert("No Question Has Been Submitted Yet");
+    }
     listDisplay.html("");
     list.forEach(subpart => {
       const result = JSON.parse(subpart.result);
@@ -33,14 +36,12 @@ window.onload = () => {
         listDisplay.append(`
           <div class="column">
             <div class="question card">
-              <h5 class="card-header">${subpart.problem}</h5>
+              <h5 style="color: red; font-weight: bold;" class="card-header">${subpart.problem}</h5>
               <div class="card-body">
-                <h5 class="card-title">Submission Details</h5>
-                <br>
-                <p>Input: ${result.result.data.input}</p>
-                <p>Output: ${result.result.data.output}</p>
-                <p>Stderr: ${result.result.data.stderr}</p>
-                <p>Compiler Info: ${result.result.data.cmpinfo}</p>
+                <p><span style="color: blue; font-weight: bold;">Input: </span>${result.result.data.input}</p>
+                <p><span style="color: blue; font-weight: bold;">Output: </span>${result.result.data.output}</p>
+                <p><span style="color: blue; font-weight: bold;">Error: </span>${result.result.data.stderr}</p>
+                <p><span style="color: blue; font-weight: bold;">Compiler Info: </span>${result.result.data.cmpinfo}</p>
               </div>
             </div>
           </div>
@@ -82,3 +83,4 @@ window.onload = () => {
   </div>
 </div>
 */
+
