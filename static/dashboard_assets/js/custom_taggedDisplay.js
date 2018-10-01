@@ -15,6 +15,9 @@ window.onload = () => {
     markedQuestionsList = markedQuestionsList.filter(question => {
       return question.tagged;
     });
+    if(markedQuestionsList.length === 0) {
+      alert("No Questions Marked yet");
+    }
     markedQuestionsListUl.text("");
     markedQuestionsList.forEach((question, index) => {
       markedQuestionsListUl.append(`
@@ -36,3 +39,4 @@ window.onload = () => {
     });
   });
 };
+
