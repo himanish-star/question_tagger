@@ -77,16 +77,17 @@ window.onload = () => {
     stage3.show();
     listDisplayRow.show();
     waitMessage.hide();
-    cumulativeData.forEach((data, index) => {
+    cumulativeData.forEach(async (data, index) => {
       data = JSON.parse(data).result.data.content;
-      const { body, problemName } = data;
+      let { body, problemName } = data;
+      body = await marked(body);
       listDisplayRow.append(`
         <div class="column">
           <div class="question card">
-            <h5 id="problemcode" class="card-header">${problemName}</h5>
+            <h1 id="problemcode" class="card-header">${problemName}</h1>
             <div class="card-body">
-              <h5 class="card-title">Submission Details</h5>
-              ${body}
+              <h5 class="card-title">Problem Details</h5>
+              <div class="hideH3" id="markedContent${index}"></div>
               <form ref='uploadCode' id='uploadCode${parseInt(index)}' action='/codeUpload' method='post' encType="multipart/form-data">
                 <textarea name="testCases" id = "myTextArea"
                 rows = "10"
@@ -108,6 +109,7 @@ window.onload = () => {
           <option value="${language}">${language}<option>
         `);
       });
+      $(`#markedContent${index}`).html(body);
     });
   };
 
@@ -164,3 +166,4 @@ window.onload = () => {
     tempDisplay(JSON.parse(localStorage.getItem('cumulativeData')));
   }
 };
+
