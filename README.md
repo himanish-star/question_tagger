@@ -1,4 +1,4 @@
-# question_tagger
+# Question Tagger Codechef API Hackathon
 
 `Tag. Track. Code. Improve`
 
