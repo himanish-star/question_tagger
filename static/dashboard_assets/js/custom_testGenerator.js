@@ -93,12 +93,12 @@ window.onload = () => {
                 rows = "10"
                 cols = "50"></textarea>
                 <br>
-                <select name="languageChosen" id="languageChoices${parseInt(index)}"><select>
+                <select class="btn btn-primary" name="languageChosen" id="languageChoices${parseInt(index)}"><select>
                 <br>
                 <br>
                 <input type="file" name="code" />
                 <input style="display: none" type="text" value="${problemName}" name="problemName"/>
-                <input type='submit' value='Submit' />
+                <input class="btn btn-success" type='submit' value='Submit' />
               </form>
             </div>
           </div>
