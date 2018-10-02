@@ -73,11 +73,11 @@ window.onload = () => {
     });
   };
 
-  const tempDisplay = (cumulativeData) => {
+  const tempDisplay = async (cumulativeData) => {
     stage3.show();
     listDisplayRow.show();
     waitMessage.hide();
-    cumulativeData.forEach(async (data, index) => {
+    const promiseList = cumulativeData.map(async (data, index) => {
       data = JSON.parse(data).result.data.content;
       let { body, problemName } = data;
       listDisplayRow.append(`
@@ -88,9 +88,8 @@ window.onload = () => {
               <h5 class="card-title">Problem Details</h5>
               <div class="hideH3" id="markedContent${index}"></div>
               <form ref='uploadCode' id='uploadCode${parseInt(index)}' action='/codeUpload' method='post' encType="multipart/form-data">
-                <textarea name="testCases" id = "myTextArea"
-                rows = "10"
-                cols = "50"></textarea>
+                <textarea class="column" name="testCases" id = "myTextArea"
+                rows = "10"></textarea>
                 <br>
                 <select class="btn btn-primary" name="languageChosen" id="languageChoices${parseInt(index)}"><select>
                 <br>
@@ -103,13 +102,20 @@ window.onload = () => {
           </div>
         </div>
       `);
+      document.getElementById(`markedContent${index}`).innerHTML = body;
       data.languagesSupported.forEach(language => {
         $(`#languageChoices${parseInt(index)}`).append(`
           <option value="${language}">${language}<option>
         `);
       });
-      $(`#markedContent${index}`).html(body);
+      const converter = new showdown.Converter(),
+          text      = document.getElementById(`markedContent${index}`).innerText,
+          html      = await converter.makeHtml(text);
+      document.getElementById(`markedContent${index}`).innerHTML = html;
+      console.log(text === document.getElementById(`markedContent${index}`).innerText);
+      return html;
     });
+    await Promise.all(promiseList);
     var script = document.createElement('script');
     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML-full';
     document.head.appendChild(script);
